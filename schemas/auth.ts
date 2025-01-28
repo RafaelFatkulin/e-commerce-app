@@ -2,14 +2,8 @@ import { z } from 'zod'
 import { roleEnum } from './user'
 
 export const signInSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email({ message: 'Поле имеет неверный формат' }),
   password: z.string().min(8),
-})
-
-export const signInResponseSchema = z.object({
-  accessToken: z.string(),
-  refreshToken: z.string(),
-  expiresAt: z.date(),
 })
 
 export const currentUserSchema = z.object({
@@ -18,4 +12,12 @@ export const currentUserSchema = z.object({
   email: z.string(),
   phone: z.string(),
   role: roleEnum,
+})
+
+export const signInResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  accessExpiresAt: z.date(),
+  refreshExpiresAt: z.date(),
+  user: currentUserSchema,
 })

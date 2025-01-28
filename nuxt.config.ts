@@ -8,9 +8,13 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
     '@nuxt/image',
   ],
+  pinia: {
+    storesDirs: ['./stores/**']
+  },
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [

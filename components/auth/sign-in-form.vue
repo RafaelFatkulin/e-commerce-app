@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { SignIn } from '~/types/auth'
+import { useSignin } from '~/composables/auth/signin'
 import { signInSchema } from '~/schemas/auth'
+
+const emits = defineEmits<{
+  closeModal: []
+}>()
 
 const state = reactive<SignIn>({
   email: '',
@@ -9,31 +14,55 @@ const state = reactive<SignIn>({
 
 const toast = useToast()
 const router = useRouter()
+const form = useTemplateRef('form')
 
-const { signIn, updateCookies, updateUser, user } = useAuth()
+const { updateCookies } = useAuth()
 
-const { data, status, error, clear, execute } = signIn({
-  email: state.email,
-  password: state.password,
-})
+const { setUser } = useAuthStore()
+
+const { data, status, error, clear, execute } = useSignin(state)
 
 watch(status, (value) => {
   if (value === 'success') {
     updateCookies({
       at: data.value?.data.accessToken || '',
       rt: data.value?.data.refreshToken || '',
+      atExpiresAt: data.value?.data.accessExpiresAt,
+      rtExpiresAt: data.value?.data.refreshExpiresAt,
     })
-    updateUser(data.value?.data.user || null)
+
+    if (data.value?.data.user) {
+      setUser(
+        data.value?.data.user,
+      )
+    }
 
     toast.add({
       title: data.value?.message || undefined,
     })
 
-    if (user.value?.role === 'admin') {
+    if (data.value?.data.user.role === 'admin') {
       router.push('/dashboard')
     }
+
+    emits('closeModal')
   }
   if (value === 'error') {
+    if (error.value?.data?.errors) {
+      let msg = ''
+      Object.keys(error.value.data.errors).forEach((key) => {
+        error?.value?.data?.errors[key]?._errors?.forEach((err) => {
+          msg = `${msg} ${err}`
+        })
+      })
+
+      toast.add({
+        title: 'Error',
+        description: msg.trim(),
+        color: 'error',
+        icon: 'i-lucide-shield-alert',
+      })
+    }
     toast.add({
       title: 'Error',
       description: error.value?.message,
@@ -47,12 +76,12 @@ watch(status, (value) => {
 
 <template>
   <UForm
+    ref="form"
     :schema="signInSchema"
     :state
-    class="space-y-5 pt-5"
+    class="space-y-4 pt-5"
     @submit="execute"
   >
-    {{ state.email }} - {{ state.password }}
     <UFormField
       label="Email"
       name="email"
@@ -78,7 +107,8 @@ watch(status, (value) => {
     </UFormField>
 
     <UButton
-      :loading="status === 'pending' || status === 'success'"
+      :disabled="!!form?.errors?.length"
+      :loading="status === 'pending'"
       class="w-full items-center justify-center"
       color="neutral"
       icon="i-lucide-log-in"

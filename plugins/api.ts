@@ -1,47 +1,59 @@
-export default defineNuxtPlugin((nuxtApp) => {
-//   const { accessToken, refreshToken, refresh, updateCookies, updateUser } = useAuth()
+import type { CurrentUser } from '~/types/auth'
+import type { SuccessResponse } from '~/types/response'
 
-  //   const {
-  //     public: { apiUrl },
-  //   } = useRuntimeConfig()
+export default defineNuxtPlugin((nuxtApp) => {
+  const { accessToken, refreshToken, updateCookies } = useAuth()
+
+  const {
+    public: { apiUrl },
+  } = useRuntimeConfig()
 
   const api = $fetch.create({
     baseURL: nuxtApp.$config.public.apiUrl,
     credentials: 'include',
     retry: 3,
     retryStatusCodes: [401],
-    // onRequest({ request, options, error }) {
-    //   if (accessToken.value) {
-    //     options.headers.set('Authorization', `Bearer ${accessToken.value}`)
-    //   }
-    // },
-    // async onResponseError({ request, response, error, options }) {
-    //   if (response.status === 401) {
-    //     await $fetch<
-    //       SuccessResponse<{ accessToken: string, refreshToken: string }>
-    //     >('/auth/refresh', {
-    //       baseURL: apiUrl,
-    //       method: 'POST',
-    //       body: {
-    //         refreshToken: refreshToken.value,
-    //       },
-    //       onResponse({ request, response, options }) {
-    //         updateCookies({
-    //           at: response._data.data?.accessToken || '',
-    //           rt: response._data.data?.refreshToken || '',
-    //         })
-    //       },
-    //       onResponseError: (err) => {
-    //         updateCookies({
-    //           at: '',
-    //           rt: '',
-    //         })
-    //         updateUser(null)
-    //         navigateTo('/sign-in')
-    //       },
-    //     })
-    //   }
-    // },
+    onRequest({ options }) {
+      if (accessToken.value) {
+        options.headers.set('Authorization', `Bearer ${accessToken.value}`)
+      }
+    },
+    async onResponseError({ response }) {
+      if (response.status === 401) {
+        await $fetch<
+          SuccessResponse<{
+            accessToken: string
+            refreshToken: string
+            accessExpiresAt: Date
+            refreshExpiresAt: Date
+            user: CurrentUser
+          }>
+        >('/refresh', {
+          baseURL: apiUrl,
+          method: 'POST',
+          body: {
+            refreshToken: refreshToken.value,
+          },
+          onResponse({ response }) {
+            updateCookies({
+              at: response._data.data?.accessToken || '',
+              rt: response._data.data?.refreshToken || '',
+              atExpiresAt: response._data.data?.accessExpiresAt || '',
+              rtExpiresAt: response._data.data?.refreshExpiresAt || '',
+            })
+          },
+          onResponseError: () => {
+            updateCookies({
+              at: '',
+              rt: '',
+              atExpiresAt: undefined,
+              rtExpiresAt: undefined,
+            })
+            navigateTo('/')
+          },
+        })
+      }
+    },
   })
 
   return {

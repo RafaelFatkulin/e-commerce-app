@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { UNavigationMenu } from '#components'
+import type { NavigationMenuItem } from '@nuxt/ui'
+import type { RootCategory } from '~/types/categories'
+import { useRootCategories } from '~/composables/categories/root-categories'
+import UserDropdown from './user-dropdown.vue'
 
 const { isLoggedIn } = useAuth()
-const items = ref([
-  {
-    label: 'Manswear',
-    to: '/products/man',
-  },
-  {
-    label: 'Womanswear',
-    to: '/products/woman',
-  },
-  {
-    label: 'Kidswear',
-    to: '/products/woman',
-  },
-])
+
+const { data } = useRootCategories()
+
+function generateMenuItems(categories: RootCategory[]): NavigationMenuItem[] {
+  return categories.map((item): NavigationMenuItem => ({
+    label: item.title,
+    to: `/products/${item.slug}`,
+  }))
+}
 
 const { y } = useWindowScroll()
 
@@ -25,7 +23,12 @@ const isScrolled = computed(() => y.value > 50)
 <template>
   <header class="py-6 sticky top-0 bg-[var(--ui-bg)]" :class="isScrolled && 'border-b border-[var(--ui-border-muted)]'">
     <UContainer class="grid grid-cols-3">
-      <UNavigationMenu :items class="justify-between w-full items-center" variant="pill" />
+      <UNavigationMenu
+        :items="data ? generateMenuItems(data?.data) : []"
+        class="justify-between w-full items-center"
+        variant="pill"
+        color="primary"
+      />
 
       <NuxtLink to="/" class="transition-colors hover:text-primary h-fit m-auto">
         <span class="text-3xl font-bold uppercase">SANE</span>
@@ -33,6 +36,7 @@ const isScrolled = computed(() => y.value > 50)
 
       <div class="flex flex-row gap-2 items-center justify-end">
         <AuthModal v-if="!isLoggedIn" />
+        <UserDropdown v-else />
 
         <UButton variant="ghost" color="neutral">
           <template #leading>

@@ -1,5 +1,5 @@
-import type { CurrentUser, SignIn, SignInResponse } from '~/types/auth'
 import type { ErrorResponse, SuccessResponse } from '~/types/response'
+import { useAuthStore } from '~/stores/auth'
 
 export function useAuth() {
   const { $api } = useNuxtApp()
@@ -7,38 +7,28 @@ export function useAuth() {
     public: { apiUrl },
   } = useRuntimeConfig()
 
-  const accessToken = useCookie('access_token')
-  const refreshToken = useCookie('refresh_token')
-  const user = useCookie<CurrentUser | null>('user')
-  const isLoggedIn = computed(() => !!user.value)
+  const { user, setUser } = useAuthStore()
 
-  const updateCookies = ({ at, rt }: { at: string, rt: string }) => {
+  const accessToken = useCookie('access_token', {
+    maxAge: 60 * 15,
+  })
+  const refreshToken = useCookie('refresh_token', {
+    maxAge: 60 * 60 * 24 * 7,
+  })
+  // const user = useCookie<CurrentUser | null>('user', {
+  //   maxAge: 60 * 15,
+  // })
+  const isLoggedIn = computed(() => !!refreshToken.value && user)
+
+  const updateCookies = ({ at, rt, atExpiresAt, rtExpiresAt }: { at: string, rt: string, atExpiresAt: Date | undefined, rtExpiresAt: Date | undefined }) => {
+    useCookie('access_token', {
+      expires: atExpiresAt ? new Date(atExpiresAt) : undefined,
+    })
+    useCookie('refresh_token', {
+      expires: rtExpiresAt ? new Date(rtExpiresAt) : undefined,
+    })
     accessToken.value = at
     refreshToken.value = rt
-  }
-  const updateUser = (value: CurrentUser | null) => {
-    user.value = value
-  }
-
-  const signIn = ({ email, password }: SignIn) => {
-    console.log('@email', email);
-    console.log('@password', password);
-    
-    return useAsyncData<
-      SuccessResponse<SignInResponse>,
-      ErrorResponse
-    >(
-      'sign-in',
-      () => $api('/signin', {
-        baseURL: apiUrl,
-        method: 'POST',
-        body: {
-          email,
-          password,
-        },
-      }),
-      { immediate: false },
-    )
   }
 
   const refresh = async () => {
@@ -51,53 +41,37 @@ export function useAuth() {
     })
   }
 
-  const getCurrentUser = async () => {
-    return await $api<SuccessResponse<CurrentUser>>('/profile', {
-      baseURL: apiUrl,
-      headers: {
-        Authorization: `Bearer ${accessToken.value}`,
-      },
-      onResponse({ response }) {
-        if (response.ok && response._data) {
-          updateUser(response._data.data)
-        }
-      },
-    })
-  }
-
   const signOut = async () => {
-    return await $api<SuccessResponse<null>>('/signout', {
-      baseURL: apiUrl,
-      method: 'POST',
-      body: {
-        refreshToken: refreshToken.value,
-      },
-      onResponse() {
-        updateCookies({ at: '', rt: '' })
-        updateUser(null)
-        navigateTo('/')
-      },
-    })
-
-    // if(!response){
-    //     return
-    // }
-
-    // if(response.message) {
-    //     updateCookies({at: "", rt: ""})
-    //     updateUser(null)
-    //     return navigateTo('/')
-    // }
+    return await useAsyncData<SuccessResponse<null>, ErrorResponse>(
+      'signout',
+      () => $api('/signout', {
+        baseURL: apiUrl,
+        method: 'POST',
+        body: {
+          refreshToken: refreshToken.value,
+        },
+        onResponse() {
+          updateCookies({
+            at: '',
+            rt: '',
+            atExpiresAt: undefined,
+            rtExpiresAt: undefined,
+          })
+          setUser(null)
+          navigateTo('/')
+        },
+      }),
+      { immediate: false },
+    )
   }
 
   return {
+    accessToken,
+    refreshToken,
     user,
     isLoggedIn,
     updateCookies,
-    updateUser,
-    signIn,
     refresh,
-    getCurrentUser,
     signOut,
   }
 }

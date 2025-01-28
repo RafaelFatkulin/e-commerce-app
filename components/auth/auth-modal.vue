@@ -3,6 +3,10 @@ import type { TabsItem } from '@nuxt/ui'
 import SignInForm from './sign-in-form.vue'
 import SignUpForm from './sign-up-form.vue'
 
+const open = ref(false)
+
+const handleClose = () => open.value = false
+
 const { isLoggedIn } = useAuth()
 
 const tabItems = ref<TabsItem[]>([
@@ -18,8 +22,8 @@ const tabItems = ref<TabsItem[]>([
 </script>
 
 <template>
-  <UModal :ui="{ content: '!max-w-[420px]' }">
-    <UButton v-if="!isLoggedIn" variant="ghost" color="neutral">
+  <UModal v-model:open="open" :ui="{ content: '!max-w-[420px]' }">
+    <UButton v-if="!isLoggedIn" variant="ghost">
       <template #leading>
         <UIcon class="size-5 md:size-6" name="i-lucide-circle-user" />
       </template>
@@ -33,7 +37,7 @@ const tabItems = ref<TabsItem[]>([
     <template #body>
       <UTabs color="neutral" variant="link" :items="tabItems" :ui="{ label: 'uppercase sm:text-base cursor-pointer' } ">
         <template #signin>
-          <SignInForm />
+          <SignInForm @close-modal="() => handleClose()" />
         </template>
         <template #signup>
           <SignUpForm />
