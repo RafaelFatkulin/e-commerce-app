@@ -1,18 +1,18 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'sky',
-      neutral: 'zinc',
+      primary: "lime",
+      neutral: "zinc",
     },
     button: {
       slots: {
-        base: 'cursor-pointer',
+        base: "cursor-pointer",
       },
     },
     navigationMenu: {
       slots: {
-        linkLabel: 'text-md',
+        linkLabel: "text-md",
       },
     },
   },
-})
+});
