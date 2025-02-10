@@ -9,3 +9,7 @@ export const rootCategorySchema = z.object({
   order: z.number(),
   asActive: z.boolean(),
 })
+
+export const categorySchema = rootCategorySchema.extend({
+  categories: z.array(rootCategorySchema)
+})
