@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+import DashboardTitle from "~/components/dashboard-page/dashboard-title.vue";
+import authGlobal from "~/middleware/auth.global";
+
+definePageMeta({
+  layout: "dashboard",
+  middleware: [authGlobal],
+});
+</script>
+
 <template>
   <DashboardPage>
     <template #header>
@@ -5,15 +15,7 @@
     </template>
 
     <div class="p-4">
-      <h2>Dashboard</h2>
+      <CategoriesTable />
     </div>
   </DashboardPage>
 </template>
-
-<script lang="ts" setup>
-definePageMeta({
-  layout: "dashboard",
-});
-</script>
-
-<style></style>

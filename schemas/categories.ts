@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const rootCategorySchema = z.object({
   id: z.number(),
@@ -7,9 +7,9 @@ export const rootCategorySchema = z.object({
   description: z.string().nullable(),
   parentId: z.number().nullable(),
   order: z.number(),
-  asActive: z.boolean(),
-})
+  isActive: z.boolean(),
+});
 
 export const categorySchema = rootCategorySchema.extend({
-  categories: z.array(rootCategorySchema)
-})
+  categories: z.array(rootCategorySchema),
+});
