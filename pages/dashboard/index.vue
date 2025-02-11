@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import DashboardTitle from '~/components/dashboard-page/dashboard-title.vue';
-
 definePageMeta({
-  layout: "dashboard",
-});
+  layout: 'dashboard',
+})
 </script>
 
 <template>

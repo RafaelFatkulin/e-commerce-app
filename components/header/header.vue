@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
-import type { RootCategory } from '~/types/categories'
-import { useRootCategories } from '~/composables/categories/root-categories'
+import type { NavigationMenuChildItem, NavigationMenuItem } from '@nuxt/ui'
+import type { Category, RootCategory } from '~/types/categories'
 import UserDropdown from './user-dropdown.vue'
+import { useCategoryTree } from '~/composables/categories/category-tree'
 
 const { isLoggedIn } = useAuth()
 
-const { data } = useRootCategories()
+const { data } = useCategoryTree()
 
-function generateMenuItems(categories: RootCategory[]): NavigationMenuItem[] {
+function generateMenuItems(categories: Category[]): NavigationMenuItem[] {
   return categories.map((item): NavigationMenuItem => ({
-    label: item.title,
+    label: item.shortTitle,
+    to: `/products/${item.slug}`,
+    children: generateMenuSubitems(item.categories)
+  }))
+}
+
+function generateMenuSubitems(categories: Category[]): NavigationMenuChildItem[] {
+  return categories.map((item) => ({
+    label: item.shortTitle,
     to: `/products/${item.slug}`,
   }))
 }
@@ -24,11 +32,24 @@ const isScrolled = computed(() => y.value > 50)
   <header class="py-6 sticky top-0 bg-[var(--ui-bg)]" :class="isScrolled && 'border-b border-[var(--ui-border-muted)]'">
     <UContainer class="grid grid-cols-3">
       <UNavigationMenu
+      :unmount-on-hide="false"
         :items="data ? generateMenuItems(data?.data) : []"
         class="justify-between w-full items-center"
         variant="pill"
         color="primary"
-      />
+        :ui="{root: 'static',viewport: 'rounded-none ring-0  bg-[var(--ui-bg)] border-t-0', viewportWrapper: 'fixed top-[72px] max-w-screen left-0 right-0', childList: 'flex flex-col w-full', childLinkLabel: 'font-normal cursor-pointer'}"
+      >
+      <template #item-content="{item}">
+        <div class=" max-w-[var(--ui-container)] py-4 px-4 sm:px-6 lg:px-8 mx-auto">
+          <span>{{ item.label }}</span>
+          <ul class>
+            <li v-for="subitem of item.children">
+              {{ subitem.label }}
+            </li>
+          </ul>
+        </div>
+      </template>
+    </UNavigationMenu>
 
       <NuxtLink to="/" class="transition-colors hover:text-primary h-fit m-auto">
         <span class="text-3xl font-bold uppercase">SANE</span>

@@ -1,3 +1,3 @@
-export const useGetCategories = () => {
+export function useGetCategories() {
   return ref()
 }

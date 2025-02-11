@@ -7,5 +7,5 @@
     <main class="flex flex-col h-screen">
       <slot />
     </main>
-  </div> 
+  </div>
 </template>

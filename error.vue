@@ -2,7 +2,7 @@
 import type { NuxtError } from '#app'
 
 const props = defineProps({
-  error: Object as () => NuxtError
+  error: Object as () => NuxtError,
 })
 
 const handleError = () => clearError({ redirect: '/' })
@@ -11,16 +11,18 @@ const handleError = () => clearError({ redirect: '/' })
 <template>
   <NuxtLayout name="default">
     <UContainer class="py-12 max-h-full h-full">
-        <div class="flex-1 flex flex-col gap-5 items-center justify-center">
-        <h2 class="text-black">{{ error?.message }}</h2>
-        <UButton 
-            @click="handleError" 
-            variant="outline" 
-            color="neutral"
+      <div class="flex-1 flex flex-col gap-5 items-center justify-center">
+        <h2 class="text-black">
+          {{ error?.message }}
+        </h2>
+        <UButton
+          variant="outline"
+          color="neutral"
+          @click="handleError"
         >
-            Go home
+          Go home
         </UButton>
-    </div>
+      </div>
     </UContainer>
   </NuxtLayout>
 </template>

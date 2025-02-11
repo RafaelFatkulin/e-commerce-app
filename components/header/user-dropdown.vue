@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useCurrentUser } from '~/composables/auth/current-user'
+import { useSignout } from '~/composables/auth/signout'
 import { useAuthStore } from '~/stores/auth'
 
-const { signOut } = useAuth()
+const { execute } = await useSignout()
 const { user, setUser } = useAuthStore()
 
 const { data } = await useCurrentUser()
-const { execute: executeSignout } = await signOut()
 
 watch(data, () => {
   if (data.value?.data) {
@@ -18,28 +18,22 @@ watch(data, () => {
 const items = ref<DropdownMenuItem[] | DropdownMenuItem[][]>([
   [
     {
-      label: 'Profile',
+      label: 'Профиль',
       icon: 'i-lucide-user-round-pen',
       to: '/profile',
     },
+    {
+      label: 'Панель',
+      icon: 'i-lucide-circle-gauge',
+      to: '/dashboard',
+    },
   ],
-  ...(user && user.role === 'admin'
-    ? [
-        [
-          {
-            label: 'Go to dashboard',
-            icon: 'i-lucide-circle-gauge',
-            to: '/dashboard',
-          },
-        ],
-      ]
-    : []),
   [
     {
-      label: 'Sign out',
+      label: 'Выйти',
       icon: 'i-lucide-log-out',
       async onSelect() {
-        await executeSignout()
+        await execute()
       },
     },
   ],
@@ -51,6 +45,7 @@ const items = ref<DropdownMenuItem[] | DropdownMenuItem[][]>([
     <UDropdownMenu
       arrow
       :items
+      :ui="{ content: 'min-w-40' }"
       :content="{
         align: 'end',
       }"

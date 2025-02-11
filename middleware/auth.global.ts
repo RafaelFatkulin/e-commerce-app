@@ -1,12 +1,15 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const { accessToken, refreshToken, user } = useAuth();
-  console.log(accessToken, refreshToken, user, to.path.includes("/dashboard"));
+  const { accessToken, refreshToken, user } = useAuth()
 
   if (
-    !accessToken.value &&
-    !refreshToken.value &&
-    to.path.includes("/dashboard")
+    !accessToken.value
+    && !refreshToken.value
+    && to.path.includes('/dashboard')
   ) {
-    return navigateTo("/");
+    return navigateTo('/')
   }
-});
+
+  if (user?.role === 'user' && to.path.includes('/dashboard')) {
+    return navigateTo('/')
+  }
+})

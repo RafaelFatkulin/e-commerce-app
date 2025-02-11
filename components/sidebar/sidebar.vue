@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-const { items } = useNavigationLinks();
+import UserDropdown from '../user-dropdown/user-dropdown.vue'
+
+const { items } = useNavigationLinks()
 </script>
 
 <template>
@@ -20,7 +22,7 @@ const { items } = useNavigationLinks();
         class="flex-1"
         orientation="vertical"
       />
-      <user-dropdown />
+      <UserDropdown />
     </div>
   </aside>
 </template>
