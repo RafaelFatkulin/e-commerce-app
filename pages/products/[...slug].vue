@@ -1,29 +1,37 @@
 <script lang="ts" setup>
-import type { RootCategory } from "~/types/categories";
-import type { ErrorResponse, SuccessResponse } from "~/types/response";
+import type { RootCategory } from '~/types/categories'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
 
-const nuxtApp = useNuxtApp();
-const route = useRoute();
+const nuxtApp = useNuxtApp()
+const route = useRoute()
 
 const { data, status, error } = useAsyncData<
   SuccessResponse<RootCategory>,
   ErrorResponse
->("category-by-slug", async () =>
-  nuxtApp.$api(`/categories/slug/${route.params.slug[0]}`)
-);
+>('category-by-slug', async () =>
+  nuxtApp.$api(`/categories/slug/${route.params.slug}`))
+
+useHead({
+  title: data.value?.data.title,
+})
 </script>
 
 <template>
-  <h1>
-    {{ data?.data.title }}
-  </h1>
-  <span>{{ data?.data.shortTitle }}</span>
-  <span>{{ data?.data.slug }}</span>
+  <section>
+    <UContainer>
+      <h1 class="font-bold text-3xl">
+        {{ data?.data.title }}
+      </h1>
+      <p v-if="data?.data.description">
+        {{ data.data.description }}
+      </p>
 
-  <span>{{ status }}</span>
-
-  <p>{{ error?.data?.message }}</p>
-  <p>{{ JSON.stringify(error?.data?.errors) }}</p>
+      <div v-if="data?.data.parentId">
+        child category
+      </div>
+      <div v-else>
+        root category
+      </div>
+    </UContainer>
+  </section>
 </template>
-
-<style></style>

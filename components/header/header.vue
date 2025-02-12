@@ -1,131 +1,46 @@
 <script setup lang="ts">
-import type { NavigationMenuChildItem, NavigationMenuItem } from "@nuxt/ui";
-import type { Category, RootCategory } from "~/types/categories";
-import UserDropdown from "./user-dropdown.vue";
-import { useCategoryTree } from "~/composables/categories/category-tree";
+import { useHeaderCategoriesMenu } from '~/composables/header/header-categories-menu'
 
-const { isLoggedIn } = useAuth();
-
-const { data } = useCategoryTree();
-
-function generateMenuItems(categories: Category[]): NavigationMenuItem[] {
-  return categories.map(
-    (item): NavigationMenuItem => ({
-      label: item.shortTitle,
-      to: `/products/${item.slug}`,
-      children:
-        item.categories.length > 0
-          ? generateMenuSubitems(item.categories)
-          : undefined,
-    })
-  );
-}
-
-function generateMenuSubitems(
-  categories: Category[]
-): NavigationMenuChildItem[] {
-  return categories.map((item) => ({
-    label: item.shortTitle,
-    to: `/products/${item.slug}`,
-  }));
-}
-
-const { y } = useWindowScroll();
-
-const isScrolled = computed(() => y.value > 50);
+const { y } = useWindowScroll()
+const isScrolled = computed(() => y.value > 50)
+const { categories, isActive, toggleCategory, startHideTimer, activeCategory, clearHideTimer, hideMenuInstantly } = useHeaderCategoriesMenu()
 </script>
 
 <template>
   <header
-    class="py-6 sticky top-0 bg-[var(--ui-bg)]"
+    class="py-6 sticky top-0 bg-[var(--ui-bg)] flex flex-col gap-2"
     :class="isScrolled && 'border-b border-[var(--ui-border-muted)]'"
   >
-    <UContainer class="grid grid-cols-3">
-      <UNavigationMenu
-        :unmount-on-hide="false"
-        :items="data ? generateMenuItems(data?.data) : []"
-        class="justify-between w-full items-center"
-        variant="pill"
-        color="primary"
-        :ui="{
-          root: 'static',
-          viewport: 'rounded-none ring-0  bg-[var(--ui-bg)] border-t-0',
-          viewportWrapper: 'fixed top-[72px] max-w-screen left-0 right-0',
-          childList: 'flex flex-col w-full',
-          childLinkLabel: 'font-normal cursor-pointer',
-        }"
-      >
-        <template #item-content="{ item }">
-          <div
-            class="max-w-[var(--ui-container)] p-4 sm:p-6 lg:p-8 mx-auto flex flex-col gap-6"
-          >
-            <span class="text-lg sm:text-xl md:text-2xl font-semibold">{{
-              item.label
-            }}</span>
-            <ul
-              class="grid grid-cols-4 gap-x-8 gap-y-4 grid-rows-6 grid-flow-col"
-            >
-              <li v-for="subitem of item.children">
-                <NuxtLink
-                  :to="subitem.to"
-                  class="transition-colors hover:text-[var(--ui-primary)]"
-                  >{{ subitem.label }}</NuxtLink
-                >
-              </li>
-            </ul>
-          </div>
-        </template>
-      </UNavigationMenu>
+    <UContainer class="w-full grid grid-cols-3">
+      <HeaderLogo />
 
-      <NuxtLink
-        to="/"
-        class="transition-colors hover:text-primary h-fit m-auto"
-      >
-        <span class="text-3xl font-bold uppercase">SANE</span>
-      </NuxtLink>
-
-      <div class="flex flex-row gap-2 items-center justify-end">
-        <AuthModal v-if="!isLoggedIn" />
-        <UserDropdown v-else />
-
+      <nav class="flex flex-row items-center gap-3">
         <UButton
-          variant="ghost"
-          color="neutral"
+          v-for="category in categories"
+          :key="category.id"
+          :to="category.to"
+          variant="link"
+          color="primary"
+          :trailing-icon="category.children?.length ? 'i-lucide-chevron-down' : undefined"
+          class="text-[var(--ui-text-muted)]"
+          :ui="{
+            base: isActive(category.id) ? 'text-[var(--ui-primary)] duration-250' : '',
+            trailingIcon: `transition-transform duration-250 ${isActive(category.id) ? 'rotate-180' : 'rotate-0'}`,
+          }"
+          @mouseenter="toggleCategory(category.id)"
+          @mouseleave="startHideTimer()"
+          @click="hideMenuInstantly()"
         >
-          <template #leading>
-            <UIcon
-              class="size-5 md:size-6"
-              name="i-lucide-heart"
-            />
-          </template>
+          {{ category.label }}
         </UButton>
+      </nav>
 
-        <UButton
-          variant="ghost"
-          color="neutral"
-        >
-          <template #leading>
-            <UIcon
-              class="size-5 md:size-6"
-              name="i-lucide-shopping-bag"
-            />
-          </template>
-        </UButton>
-
-        <UButton
-          variant="ghost"
-          color="neutral"
-        >
-          <template #leading>
-            <UIcon
-              class="size-5 md:size-6"
-              name="i-lucide-earth"
-            />
-          </template>
-        </UButton>
-
-        <ThemeButton />
-      </div>
+      <HeaderButtons />
     </UContainer>
+    <HeaderCategories
+      :active-category="activeCategory" 
+      @clear-hide-timer="clearHideTimer" 
+      @hide-menu-instantly="hideMenuInstantly"
+    />
   </header>
 </template>
