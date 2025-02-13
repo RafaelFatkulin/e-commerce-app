@@ -79,7 +79,7 @@ watch(status, (value) => {
     ref="form"
     :schema="signInSchema"
     :state
-    class="space-y-4 pt-5"
+    class="flex flex-col gap-4 pt-5"
     @submit="execute"
   >
     <UFormField

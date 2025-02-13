@@ -9,29 +9,40 @@ const { data, status, error } = useAsyncData<
   SuccessResponse<RootCategory>,
   ErrorResponse
 >('category-by-slug', async () =>
-  nuxtApp.$api(`/categories/slug/${route.params.slug}`))
-
-useHead({
-  title: data.value?.data.title,
+  nuxtApp.$api(`/categories/slug/${route.params.slug}`), {
 })
+
+useHead(() => ({
+  title: data.value?.data.title,
+  meta: {
+
+  }
+}))
 </script>
 
 <template>
   <section>
     <UContainer>
-      <h1 class="font-bold text-3xl">
-        {{ data?.data.title }}
-      </h1>
-      <p v-if="data?.data.description">
-        {{ data.data.description }}
-      </p>
+      <div v-if="status === 'success'">
+        <h1 class="font-bold text-3xl">
+          {{ data?.data.title }}
+        </h1>
+        <p v-if="data?.data.description">
+          {{ data.data.description }}
+        </p>
+        <div v-if="data?.data.parentId">
+          child category
+        </div>
+        <div v-else>
+          root category
+        </div>
+      </div>
 
-      <div v-if="data?.data.parentId">
-        child category
+      <div v-else-if="status === 'pending'">
+        <USkeleton class="h-9 w-50" />
       </div>
-      <div v-else>
-        root category
-      </div>
+
+
     </UContainer>
   </section>
 </template>

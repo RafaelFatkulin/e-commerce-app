@@ -1,31 +1,19 @@
 <script lang="ts" setup>
-import type { TableColumn } from '@nuxt/ui'
-import type { RootCategory } from '~/types/categories'
-import { useRootCategories } from '~/composables/categories/root-categories'
-import type { _GlobalComponents } from '#components'
-
-const { data, status, error } = await useRootCategories()
+import type { TableColumn } from '@nuxt/ui';
+import { useGetCategories } from '~/composables/categories/get-categories';
+import type { RootCategory } from '~/types/categories';
 
 const UBadge = resolveComponent('UBadge')
-const UButton = resolveComponent('UButton')
+
+const { parentId } = defineProps<{
+  parentId: number
+}>()
+
+const { data, status, error, refresh } = useGetCategories(parentId)
 
 const columns: TableColumn<RootCategory>[] = [
   {
     id: 'expand',
-    cell: ({ row }) =>
-      h(UButton, {
-        color: 'neutral',
-        variant: 'ghost',
-        icon: 'i-lucide-chevron-down',
-        square: true,
-        ui: {
-          leadingIcon: [
-            'transition-transform',
-            row.getIsExpanded() ? 'duration-200 rotate-180' : ''
-          ],
-        },
-        onClick: () => row.toggleExpanded()
-      })
   },
   {
     accessorKey: 'title',
@@ -59,7 +47,7 @@ const columns: TableColumn<RootCategory>[] = [
         () => (value ? 'не активна' : 'активна'),
       )
     },
-  },
+  }
 ]
 </script>
 
@@ -69,17 +57,11 @@ const columns: TableColumn<RootCategory>[] = [
     :columns
     :loading="status === 'pending'"
     :ui="{
-      // th: 'first-of-type:max-w-12 last-of-type:max-w-29',
-      // td: 'first-of-type:max-w-12 last-of-type:max-w-29'
+      base: 'border border-[var(--ui-border)]'
     }"
   >
-    <template #expanded="{ row }">
-      <CategoriesSubcategories :parent-id="row.original.id" />
-    </template>
-
     <template #empty>
       Нет данных
     </template>
   </UTable>
-
 </template>

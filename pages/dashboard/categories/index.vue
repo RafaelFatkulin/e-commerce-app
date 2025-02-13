@@ -10,8 +10,6 @@ definePageMeta({
       <DashboardTitle>Категории</DashboardTitle>
     </template>
 
-    <div class="">
-      <CategoriesTable />
-    </div>
+    <CategoriesTable />
   </DashboardPage>
 </template>
