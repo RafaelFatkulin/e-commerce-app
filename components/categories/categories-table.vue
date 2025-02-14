@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import type { TableColumn } from '@nuxt/ui'
-import type { RootCategory } from '~/types/categories'
+import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
+import type { Row } from '@tanstack/vue-table'
+import type { Category, RootCategory } from '~/types/categories'
 import { useRootCategories } from '~/composables/categories/root-categories'
 import type { _GlobalComponents } from '#components'
 
@@ -8,25 +9,10 @@ const { data, status, error } = await useRootCategories()
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
+
 
 const columns: TableColumn<RootCategory>[] = [
-  {
-    id: 'expand',
-    cell: ({ row }) =>
-      h(UButton, {
-        color: 'neutral',
-        variant: 'ghost',
-        icon: 'i-lucide-chevron-down',
-        square: true,
-        ui: {
-          leadingIcon: [
-            'transition-transform',
-            row.getIsExpanded() ? 'duration-200 rotate-180' : ''
-          ],
-        },
-        onClick: () => row.toggleExpanded()
-      })
-  },
   {
     accessorKey: 'title',
     header: 'Название',
@@ -37,13 +23,6 @@ const columns: TableColumn<RootCategory>[] = [
       ])
     }
   },
-  // {
-  //   accessorKey: 'description',
-  //   header: 'Описание',
-  //   cell: ({ row }) => {
-  //     return row.getValue('description') || '-'
-  //   }
-  // },
   {
     accessorKey: 'isActive',
     header: 'Статус',
@@ -54,13 +33,60 @@ const columns: TableColumn<RootCategory>[] = [
         {
           size: 'md',
           variant: 'soft',
-          color: value ? 'error' : 'success',
+          color: value ? 'success' : 'error',
         },
-        () => (value ? 'не активна' : 'активна'),
+        () => (value ? 'активна' : 'не активна'),
       )
     },
   },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-right' },
+        h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end'
+            },
+            items: getRowItems(row)
+          },
+          () => h(UButton, {
+            icon: 'i-lucide-ellipsis-vertical',
+            color: 'neutral',
+            variant: 'ghost',
+            class: 'ml-auto'
+          })
+        )
+      )
+    }
+  }
 ]
+
+function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
+  console.log(row);
+
+  return [
+    {
+      type: 'label',
+      label: 'Действия'
+    },
+    {
+      type: 'separator'
+    },
+    {
+      type: 'link',
+      icon: 'i-lucide-pencil',
+      label: 'Редактировать',
+      to: { name: 'dashboard-categories-id', params: { id: row.original.id } }
+    },
+    // {
+    // type: '',
+    // }
+  ]
+}
 </script>
 
 <template>
@@ -68,15 +94,7 @@ const columns: TableColumn<RootCategory>[] = [
     :data="data?.data"
     :columns
     :loading="status === 'pending'"
-    :ui="{
-      // th: 'first-of-type:max-w-12 last-of-type:max-w-29',
-      // td: 'first-of-type:max-w-12 last-of-type:max-w-29'
-    }"
   >
-    <template #expanded="{ row }">
-      <CategoriesSubcategories :parent-id="row.original.id" />
-    </template>
-
     <template #empty>
       Нет данных
     </template>

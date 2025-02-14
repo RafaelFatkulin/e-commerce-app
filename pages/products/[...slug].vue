@@ -14,9 +14,6 @@ const { data, status, error } = useAsyncData<
 
 useHead(() => ({
   title: data.value?.data.title,
-  meta: {
-
-  }
 }))
 </script>
 

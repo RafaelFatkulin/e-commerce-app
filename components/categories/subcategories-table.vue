@@ -25,13 +25,6 @@ const columns: TableColumn<RootCategory>[] = [
       ])
     }
   },
-  // {
-  //   accessorKey: 'description',
-  //   header: 'Описание',
-  //   cell: ({ row }) => {
-  //     return row.getValue('description') || '-'
-  //   }
-  // },
   {
     accessorKey: 'isActive',
     header: 'Статус',

@@ -3,7 +3,10 @@ import { useHeaderCategoriesMenu } from '~/composables/header/header-categories-
 
 const { y } = useWindowScroll()
 const isScrolled = computed(() => y.value > 50)
-const { categories, isActive, toggleCategory, startHideTimer, activeCategory, clearHideTimer, hideMenuInstantly } = useHeaderCategoriesMenu()
+const {
+  categories,
+  isActive,
+  toggleCategory, startHideTimer, activeCategory, clearHideTimer, hideMenuInstantly } = useHeaderCategoriesMenu()
 </script>
 
 <template>
@@ -38,8 +41,8 @@ const { categories, isActive, toggleCategory, startHideTimer, activeCategory, cl
       <HeaderButtons />
     </UContainer>
     <HeaderCategories
-      :active-category="activeCategory" 
-      @clear-hide-timer="clearHideTimer" 
+      :active-category="activeCategory"
+      @clear-hide-timer="clearHideTimer"
       @hide-menu-instantly="hideMenuInstantly"
     />
   </header>

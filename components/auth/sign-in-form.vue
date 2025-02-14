@@ -62,10 +62,12 @@ watch(status, (value) => {
         color: 'error',
         icon: 'i-lucide-shield-alert',
       })
+
+      return
     }
     toast.add({
       title: 'Error',
-      description: error.value?.message,
+      description: error.value?.data?.message as string,
       color: 'error',
       icon: 'i-lucide-shield-alert',
     })
