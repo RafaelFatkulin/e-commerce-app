@@ -2,6 +2,7 @@
 definePageMeta({
   layout: 'dashboard',
 })
+
 </script>
 
 <template>

@@ -1,21 +1,43 @@
 <script lang="ts" setup>
 import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
-import type { Category, RootCategory } from '~/types/categories'
-import { useRootCategories } from '~/composables/categories/root-categories'
-import type { _GlobalComponents } from '#components'
+import { type Row } from '@tanstack/vue-table'
+import type { RootCategory } from '~/types/categories'
+import type { _GlobalComponents, UTable } from '#components'
+import { useGetCategories } from '~/composables/categories/get-categories';
 
-const { data, status, error } = await useRootCategories()
+
+const {
+  data,
+  status,
+  error,
+  filter
+} = await useGetCategories()
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
-
 const columns: TableColumn<RootCategory>[] = [
   {
-    accessorKey: 'title',
-    header: 'Название',
+    accessorKey: 'shortTitle',
+    header: ({ column }) => {
+      const isSorted = filter.sort_order === 'asc'
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Название',
+        icon: isSorted
+          ? 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-narrow-wide',
+        class: '-mx-2.5',
+        onClick: () => {
+          filter.page = 1
+          filter.sort_by = 'shortTitle'
+          filter.sort_order = isSorted ? 'desc' : 'asc'
+        }
+      })
+    },
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col gap-1' }, [
         h('p', { class: 'font-medium text-(--ui-text-highlighted)' }, row.original.shortTitle),
@@ -66,8 +88,6 @@ const columns: TableColumn<RootCategory>[] = [
 ]
 
 function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
-  console.log(row);
-
   return [
     {
       type: 'label',
@@ -82,22 +102,32 @@ function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
       label: 'Редактировать',
       to: { name: 'dashboard-categories-id', params: { id: row.original.id } }
     },
-    // {
-    // type: '',
-    // }
   ]
 }
 </script>
 
 <template>
-  <UTable
-    :data="data?.data"
-    :columns
-    :loading="status === 'pending'"
-  >
-    <template #empty>
-      Нет данных
-    </template>
-  </UTable>
+  <UCard :ui="{ body: 'flex flex-col gap-4' }">
+    <CategoriesFilters />
+
+    <UTable
+      :ui="{ root: 'border border-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] shadow-sm' }"
+      :data="data?.data"
+      :columns
+      :loading="status === 'pending'"
+    >
+      <template #empty>
+        <span v-if="error">{{ error.data?.message }}</span>
+        <span v-else>Нет данных</span>
+      </template>
+    </UTable>
+
+    <UPagination
+      v-model:page="filter.page"
+      :items-per-page="filter.per_page"
+      :total="data?.meta?.total"
+      @update:page="(p) => filter.page = p"
+    />
+  </UCard>
 
 </template>

@@ -5,7 +5,7 @@ export const useGetCategory = (id: number) => {
   const nuxtApp = useNuxtApp()
 
   return useAsyncData<SuccessResponse<RootCategory>, ErrorResponse>(
-    'get-bategory-by-id',
+    'get-category-by-id',
     async () => nuxtApp.$api(`/categories/${id}`),
     {
       immediate: true

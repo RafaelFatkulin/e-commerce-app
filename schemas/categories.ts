@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { createFilterSchema } from './filter'
+import type { RootCategory } from '~/types/categories'
 
 export const rootCategorySchema = z.object({
   id: z.number(),
@@ -14,3 +16,5 @@ export const rootCategorySchema = z.object({
 export const categorySchema = rootCategorySchema.extend({
   categories: z.array(rootCategorySchema),
 })
+
+export const categoryFilterSchema = createFilterSchema(rootCategorySchema)
