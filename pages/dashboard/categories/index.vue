@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'dashboard',
-})
-
+  layout: "dashboard",
+});
 </script>
 
 <template>

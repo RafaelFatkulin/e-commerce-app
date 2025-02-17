@@ -1,27 +1,25 @@
 <script lang="ts" setup>
-import { useGetCategory } from '~/composables/categories/get-category';
+import { useGetCategory } from "~/composables/categories/get-category";
 
 definePageMeta({
-  layout: 'dashboard',
-})
+  layout: "dashboard",
+});
 
-const route = useRoute()
+const route = useRoute();
 
-const {
-  data,
-  error,
-} = await useGetCategory(Number(route.params.id))
+const { data, error } = await useGetCategory(Number(route.params.id));
 
 useHead(() => ({
-  title: `Категории - ${data.value?.data.title}`
-}))
+  title: `Категории - ${data.value?.data.title}`,
+}));
 
-const isSame = computed(() => data.value?.data.title === data.value?.data.shortTitle)
-const hasParent = computed(() => data.value?.data.parentId)
+const isSame = computed(
+  () => data.value?.data.title === data.value?.data.shortTitle
+);
+const hasParent = computed(() => data.value?.data.parentId);
 watch(error, () => {
-  error.value?.data
-})
-
+  error.value?.data;
+});
 </script>
 
 <template>
@@ -38,12 +36,10 @@ watch(error, () => {
             {{ data?.data.shortTitle }}
           </template>
         </DashboardTitle>
-
       </div>
     </template>
 
     <div class="p-4 grid gap-8 grid-cols-1 md:grid-cols-2">
-
       <UCard>
         <template #header>
           <svg
@@ -72,7 +68,10 @@ watch(error, () => {
         </template>
       </UCard>
 
-      <CategoriesTable v-if="!hasParent" />
+      <CategoriesTable
+        v-if="!hasParent"
+        bordered
+      />
     </div>
   </DashboardPage>
 </template>
