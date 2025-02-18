@@ -8,7 +8,7 @@ const {
 </script>
 
 <template>
-  <div class="flex  flex-row gap-4 gap-y-2">
+  <div class="flex flex-row gap-4 gap-y-2">
     <UInput
       :loading="status === 'pending'"
       icon="i-lucide-search"

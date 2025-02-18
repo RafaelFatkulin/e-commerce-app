@@ -48,18 +48,18 @@ const columns: TableColumn<RootCategory>[] = [
     },
   },
   {
-    accessorKey: "isActive",
+    accessorKey: "status",
     header: "Статус",
     cell: ({ row }) => {
-      const value = row.getValue("isActive");
+      const value = row.getValue("status");
       return h(
         UBadge,
         {
           size: "md",
           variant: "soft",
-          color: value ? "success" : "error",
+          color: value === 'active' ? "success" : "error",
         },
-        () => (value ? "активна" : "не активна")
+        () => (value === 'active' ? "активна" : "не активна")
       );
     },
   },
@@ -110,12 +110,24 @@ function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
 </script>
 
 <template>
-  <UCard
-    :ui="{
-      root: !bordered ? '!border-0 ring-0 shadow-none rounded-none' : '',
-      body: 'flex flex-col gap-4',
-    }"
-  >
+  <UCard :ui="{
+    root: !bordered ? '!border-0 ring-0 shadow-none rounded-none' : '',
+    body: 'flex flex-col gap-4',
+  }">
+    <template
+      v-if="bordered"
+      #header
+    >
+      <h2
+        class="text-base text-pretty font-semibold text-(--ui-text-highlighted)"
+      >
+        Дочерние категории
+      </h2>
+      <p class="text-sm text-pretty text-(--ui-text-muted)">
+        Таблица дочерних категорий
+      </p>
+    </template>
+
     <CategoriesFilters />
 
     <UTable

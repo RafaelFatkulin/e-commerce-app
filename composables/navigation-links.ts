@@ -1,5 +1,9 @@
+import type { NavigationMenuItem } from "@nuxt/ui"
+
 export function useNavigationLinks() {
-  const items = useState('navigation-links', () => [
+  const route = useRoute()
+
+  const items = useState<NavigationMenuItem[]>('navigation-links', () => [
     {
       label: 'Главная',
       icon: 'i-heroicons-home',

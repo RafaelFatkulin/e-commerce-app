@@ -3,7 +3,10 @@ import MobileSlideover from '~/components/mobile-slideover/mobile-slideover.vue'
 </script>
 
 <template>
-  <header v-if="$slots.header" class="min-h-16 px-4 py-2 flex flex-row gap-2 border-b border-[var(--ui-border)]">
+  <header
+    v-if="$slots.header"
+    class="min-h-16 px-4 sm:px-6 py-2 sm:py-4 flex flex-row gap-2 border-b border-[var(--ui-border)]"
+  >
     <MobileSlideover />
     <div
       class="flex-1 flex flex-row gap-x-4 gap-y-2 flex-wrap items-center justify-between"
