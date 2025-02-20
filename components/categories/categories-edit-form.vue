@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FormSubmitEvent, SelectMenuItem } from '@nuxt/ui';
+import { useEditCategory } from '~/composables/categories/edit-category';
 import { useGetRootCategories } from '~/composables/categories/get-root-categories';
 import { editCategorySchema } from '~/schemas/categories';
 import type { CategoryStatus, EditCategory, RootCategory } from '~/types/categories';
@@ -52,15 +53,22 @@ const state = reactive<Partial<EditCategory>>({
   status: category.status
 })
 
-const toast = useToast()
+
+const { data, status: editStatus, execute } = await useEditCategory(state)
 
 async function onSubmit(event: FormSubmitEvent<EditCategory>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
   console.log(event.data)
+  await execute()
 }
 
 function getChip(value: CategoryStatus) {
   return statusVariants.value.find(item => item.value === value)?.chip
+}
+
+function handleTitleChange() {
+  if (state.title) {
+    state.slug = translit(state.title)
+  }
 }
 
 </script>
@@ -94,6 +102,7 @@ function getChip(value: CategoryStatus) {
             class="w-full"
             v-model="state.title"
             placeholder="Введите название"
+            v-on:change="handleTitleChange"
           />
         </UFormField>
 
@@ -191,6 +200,7 @@ function getChip(value: CategoryStatus) {
           class="h-fit self-end w-fit col-span-full ml-auto"
           icon="i-lucide-pencil"
           type="submit"
+          :loading="editStatus === 'pending'"
         >
           Редактировать
         </UButton>
