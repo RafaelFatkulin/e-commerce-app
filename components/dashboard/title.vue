@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const {
-  back,
-} = defineProps<{ back?: boolean }>()
+  backTo,
+} = defineProps<{ backTo?: string }>()
 
 const router = useRouter()
 
@@ -14,11 +14,11 @@ const handleButton = () => router.back()
     :class="{ 'items-start': $slots.subtitle }"
   >
     <UButton
-      v-if="back"
+      v-if="backTo"
       variant="ghost"
       color="neutral"
       icon="i-lucide-chevron-left"
-      @click="handleButton"
+      :to="backTo"
     />
     <div class="flex flex-col">
       <h1

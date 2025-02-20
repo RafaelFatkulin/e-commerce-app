@@ -17,6 +17,12 @@ const isSame = computed(
   () => data.value?.data.title === data.value?.data.shortTitle
 );
 const hasParent = computed(() => data.value?.data.parentId);
+const backLink = computed(() => {
+  if (hasParent.value) {
+    return `/dashboard/categories/${data.value?.data.parentId}`
+  }
+  return '/dashboard/categories'
+})
 watch(error, () => {
   error.value?.data;
 });
@@ -26,7 +32,7 @@ watch(error, () => {
   <DashboardPage>
     <template #header>
       <div class="flex flex-col">
-        <DashboardTitle back>
+        <DashboardTitle :back-to="backLink">
           {{ data?.data.title }}
 
           <template

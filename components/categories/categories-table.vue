@@ -9,7 +9,7 @@ const { bordered = false } = defineProps<{
   bordered?: boolean;
 }>();
 
-const { data, status, error, filter } = await useGetCategories();
+const { data, status, error, filter, refresh } = await useGetCategories();
 
 const UBadge = resolveComponent("UBadge");
 const UButton = resolveComponent("UButton");
