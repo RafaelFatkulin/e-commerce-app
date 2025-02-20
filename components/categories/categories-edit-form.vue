@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import type { FormSubmitEvent, SelectMenuItem } from '@nuxt/ui';
-import { useEditCategory } from '~/composables/categories/edit-category';
-import { useGetRootCategories } from '~/composables/categories/get-root-categories';
-import { editCategorySchema } from '~/schemas/categories';
-import type { CategoryStatus, EditCategory, RootCategory } from '~/types/categories';
+import type { CategoryStatus, EditCategory, RootCategory } from '~/types/categories'
+import { useEditCategory } from '~/composables/categories/edit-category'
+import { useGetRootCategories } from '~/composables/categories/get-root-categories'
+import { editCategorySchema } from '~/schemas/categories'
 
 const { category } = defineProps<{
   category: RootCategory
@@ -14,11 +13,11 @@ const { data: categories, status } = useGetRootCategories()
 const categoryVariants = computed(() => {
   const items = [{
     type: 'label',
-    label: 'Выберите родительскую категорию'
+    label: 'Выберите родительскую категорию',
   }]
   const itemsFromData = categories.value?.data.map(category => ({
     label: category.title,
-    value: category.id
+    value: category.id,
   }))
 
   return [...items, ...(itemsFromData || [])]
@@ -27,21 +26,23 @@ const categoryVariants = computed(() => {
 const statusVariants = ref([
   {
     type: 'label',
-    label: 'Выберите статус'
+    label: 'Выберите статус',
   },
   {
     label: 'Активна',
     value: 'active',
     chip: {
-      color: 'success' as const
-    }
-  }, {
+      color: 'success' as const,
+    },
+  },
+  {
     label: 'Не активна',
     value: 'not-active',
     chip: {
-      color: 'error' as const
-    }
-  }])
+      color: 'error' as const,
+    },
+  },
+])
 
 const state = reactive<Partial<EditCategory>>({
   title: category.title,
@@ -50,14 +51,12 @@ const state = reactive<Partial<EditCategory>>({
   parentId: category.parentId === null ? undefined : category.parentId,
   slug: category.slug,
   order: category.order,
-  status: category.status
+  status: category.status,
 })
 
+const { status: editStatus, execute } = await useEditCategory(state)
 
-const { data, status: editStatus, execute } = await useEditCategory(state)
-
-async function onSubmit(event: FormSubmitEvent<EditCategory>) {
-  console.log(event.data)
+async function onSubmit() {
   await execute()
 }
 
@@ -70,7 +69,6 @@ function handleTitleChange() {
     state.slug = translit(state.title)
   }
 }
-
 </script>
 
 <template>
@@ -98,11 +96,11 @@ function handleTitleChange() {
           name="title"
         >
           <UInput
+            v-model="state.title"
             icon="i-lucide-text"
             class="w-full"
-            v-model="state.title"
             placeholder="Введите название"
-            v-on:change="handleTitleChange"
+            @change="handleTitleChange"
           />
         </UFormField>
 
@@ -111,9 +109,9 @@ function handleTitleChange() {
           name="shortTitle"
         >
           <UInput
+            v-model="state.shortTitle"
             icon="i-lucide-text"
             class="w-full"
-            v-model="state.shortTitle"
             placeholder="Введите короткое название"
           />
         </UFormField>
@@ -123,9 +121,9 @@ function handleTitleChange() {
           name="slug"
         >
           <UInput
+            v-model="state.slug"
             icon="i-lucide-text"
             class="w-full"
-            v-model="state.slug"
             placeholder="Введите ЧПУ"
           />
         </UFormField>
@@ -144,7 +142,7 @@ function handleTitleChange() {
             icon="i-lucide-users"
             class="w-full"
             :ui="{
-              trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200'
+              trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200',
             }"
           />
         </UFormField>
@@ -154,10 +152,10 @@ function handleTitleChange() {
           name="order"
         >
           <UInput
+            v-model="state.order"
             icon="i-lucide-arrow-down-up"
             type="number"
             min="1"
-            v-model="state.order"
             class="w-full"
           />
         </UFormField>
@@ -190,8 +188,8 @@ function handleTitleChange() {
           name="description"
         >
           <UTextarea
-            class="w-full"
             v-model="state.description"
+            class="w-full"
             placeholder="Введите описание"
           />
         </UFormField>

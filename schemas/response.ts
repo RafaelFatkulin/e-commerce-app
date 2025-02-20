@@ -20,11 +20,11 @@ export function successResponseSchema<D extends z.ZodTypeAny>(dataSchema: D) {
   })
 }
 
-const messsageArray = z.object({
-  _errors: z.array(z.string()),
-})
 
 export const errorResponseSchema = z.object({
   message: z.union([z.string(), z.record(z.string())]),
-  errors: z.record(z.string(), messsageArray),
+  errors: z.array(z.object({
+    field: z.string(),
+    message: z.string()
+  })),
 })

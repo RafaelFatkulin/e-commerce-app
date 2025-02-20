@@ -6,7 +6,12 @@ const isScrolled = computed(() => y.value > 50)
 const {
   categories,
   isActive,
-  toggleCategory, startHideTimer, activeCategory, clearHideTimer, hideMenuInstantly } = useHeaderCategoriesMenu()
+  toggleCategory,
+  startHideTimer,
+  activeCategory,
+  clearHideTimer,
+  hideMenuInstantly,
+} = useHeaderCategoriesMenu()
 </script>
 
 <template>

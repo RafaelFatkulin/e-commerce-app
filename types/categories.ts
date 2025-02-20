@@ -5,7 +5,7 @@ import type {
   categoryStatusSchema,
   createCategorySchema,
   editCategorySchema,
-  rootCategorySchema
+  rootCategorySchema,
 } from '~/schemas/categories'
 
 export type CategoryStatus = z.output<typeof categoryStatusSchema>

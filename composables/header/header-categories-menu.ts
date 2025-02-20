@@ -32,10 +32,6 @@ export function useHeaderCategoriesMenu() {
 
   const isActive = (categoryId: number) => activeCategoryId.value === categoryId
 
-  watch(activeCategory, (value) => {
-    console.log(value)
-  })
-
   let hideTimer: NodeJS.Timeout | null = null
 
   const toggleCategory = (categoryId: number | null, show: boolean = true) => {

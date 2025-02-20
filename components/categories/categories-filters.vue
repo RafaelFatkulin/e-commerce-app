@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { useGetCategories } from '~/composables/categories/get-categories';
+import { useGetCategories } from '~/composables/categories/get-categories'
 
 const {
   status,
-  filter
+  filter,
 } = await useGetCategories()
 </script>
 
 <template>
   <div class="flex flex-row gap-4 gap-y-2">
     <UInput
+      v-model="filter.q"
       :loading="status === 'pending'"
       icon="i-lucide-search"
       size="md"
       variant="outline"
       placeholder="Поиск по названию..."
       class="w-full"
-      v-model="filter.q"
     >
       <template
         v-if="filter.q?.length"

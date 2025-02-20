@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { createFilterSchema } from './filter'
 import { stringField } from './base'
+import { createFilterSchema } from './filter'
 
 export const categoryStatusSchema = z.enum(['active', 'not-active'])
 
@@ -12,7 +12,7 @@ export const rootCategorySchema = z.object({
   description: z.string().nullable(),
   parentId: z.number().nullable(),
   order: z.number(),
-  status: categoryStatusSchema
+  status: categoryStatusSchema,
 })
 
 export const categorySchema = rootCategorySchema.extend({
@@ -24,10 +24,10 @@ export const categoryFilterSchema = createFilterSchema(rootCategorySchema)
 export const createCategorySchema = z.object({
   shortTitle: stringField(3, 128).optional(),
   title: stringField(3, 128),
-  slug: stringField().optional().nullable().optional(),
-  description: stringField(20).nullable().optional(),
-  parentId: z.number().nullable().optional(),
-  order: z.number().min(1, 'Минимальное значение поля - 1').nullable().optional(),
+  slug: stringField().optional().optional(),
+  description: stringField().optional(),
+  parentId: z.number().optional(),
+  order: z.number().min(1, 'Минимальное значение поля - 1').optional(),
   status: categoryStatusSchema.optional(),
 })
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { NavigationMenuItem } from '@nuxt/ui';
-import { ref, watch, computed } from 'vue'
+import type { NavigationMenuItem } from '@nuxt/ui'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
   activeCategory: any
@@ -19,7 +19,8 @@ const currentCategory = computed<NavigationMenuItem>(() => props.activeCategory)
 watch(() => props.activeCategory, (newCategory, oldCategory) => {
   if (newCategory && oldCategory) {
     direction.value = newCategory.id > oldCategory.id ? 'right' : 'left'
-  } else {
+  }
+  else {
     direction.value = 'right'
   }
   key.value++
@@ -29,7 +30,8 @@ const slideClasses = computed(() => {
   const baseClasses = 'transition-all duration-150 ease-in'
   if (direction.value === 'right') {
     return `${baseClasses} opacity-0 -translate-x-2`
-  } else {
+  }
+  else {
     return `${baseClasses} opacity-0 translate-x-2`
   }
 })
@@ -61,7 +63,6 @@ const slideClasses = computed(() => {
               :key="key"
               class="flex flex-col gap-4"
             >
-
               <div
                 v-if="currentCategory"
                 class="flex flex-row items-center justify-between gap-4"
@@ -73,7 +74,9 @@ const slideClasses = computed(() => {
                   variant="link"
                   :to="currentCategory.to"
                   @click="emit('hideMenuInstantly')"
-                >Смотреть все</UButton>
+                >
+                  Смотреть все
+                </UButton>
               </div>
               <ul
                 v-if="currentCategory && currentCategory.children"

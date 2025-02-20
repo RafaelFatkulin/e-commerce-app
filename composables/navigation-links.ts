@@ -1,4 +1,4 @@
-import type { NavigationMenuItem } from "@nuxt/ui"
+import type { NavigationMenuItem } from '@nuxt/ui'
 
 export function useNavigationLinks() {
   const route = useRoute()

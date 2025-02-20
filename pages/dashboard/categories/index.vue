@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: "dashboard",
-});
+  layout: 'dashboard',
+})
 </script>
 
 <template>
   <DashboardPage>
     <template #header>
-      <DashboardTitle>Категории</DashboardTitle>
+      <DashboardTitle>
+        Категории
+
+        <template #button>
+          <CategoriesCreateModal />
+        </template>
+      </DashboardTitle>
     </template>
 
     <CategoriesTable />

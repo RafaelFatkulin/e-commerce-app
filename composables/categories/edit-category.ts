@@ -1,8 +1,8 @@
-import type { EditCategory, RootCategory } from "~/types/categories"
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
-import { useGetCategory } from "./get-category"
+import type { EditCategory, RootCategory } from '~/types/categories'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
+import { useGetCategory } from './get-category'
 
-export const useEditCategory = async (bodyData: EditCategory) => {
+export async function useEditCategory(bodyData: EditCategory) {
   const nuxtApp = useNuxtApp()
 
   const route = useRoute()
@@ -20,8 +20,8 @@ export const useEditCategory = async (bodyData: EditCategory) => {
     }),
     {
       immediate: false,
-      lazy: true
-    }
+      lazy: true,
+    },
   )
 
   const { data, error } = response
@@ -31,12 +31,10 @@ export const useEditCategory = async (bodyData: EditCategory) => {
       title: 'Успешно',
       description: data.value?.message as string,
       icon: 'i-lucide-circle-check',
-      color: 'success'
+      color: 'success',
     })
 
     refresh()
-
-    console.log('updated')
   })
 
   watch(error, () => {
@@ -44,11 +42,11 @@ export const useEditCategory = async (bodyData: EditCategory) => {
       title: 'Ошибка',
       description: error.value?.data?.message as string,
       icon: 'i-lucide-circle-x',
-      color: 'error'
+      color: 'error',
     })
   })
 
   return {
-    ...response
+    ...response,
   }
 }

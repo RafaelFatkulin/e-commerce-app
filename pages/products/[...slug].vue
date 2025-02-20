@@ -38,8 +38,6 @@ useHead(() => ({
       <div v-else-if="status === 'pending'">
         <USkeleton class="h-9 w-50" />
       </div>
-
-
     </UContainer>
   </section>
 </template>

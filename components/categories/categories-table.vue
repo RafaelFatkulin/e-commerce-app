@@ -1,111 +1,111 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem, TableColumn } from "@nuxt/ui";
-import { type Row } from "@tanstack/vue-table";
-import type { RootCategory } from "~/types/categories";
-import type { _GlobalComponents, UTable } from "#components";
-import { useGetCategories } from "~/composables/categories/get-categories";
+import type { UTable } from '#components'
+import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
+import type { Row } from '@tanstack/vue-table'
+import type { RootCategory } from '~/types/categories'
+import { useGetCategories } from '~/composables/categories/get-categories'
 
 const { bordered = false } = defineProps<{
-  bordered?: boolean;
-}>();
+  bordered?: boolean
+}>()
 
-const { data, status, error, filter, refresh } = await useGetCategories();
+const { data, status, error, filter } = useGetCategories()
 
-const UBadge = resolveComponent("UBadge");
-const UButton = resolveComponent("UButton");
-const UDropdownMenu = resolveComponent("UDropdownMenu");
+const UBadge = resolveComponent('UBadge')
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const columns: TableColumn<RootCategory>[] = [
   {
-    accessorKey: "shortTitle",
+    accessorKey: 'shortTitle',
     header: ({ column }) => {
-      const isSorted = filter.sort_order === "asc";
+      const isSorted = filter.sort_order === 'asc'
 
       return h(UButton, {
-        color: "neutral",
-        variant: "ghost",
-        label: "Название",
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Название',
         icon: isSorted
-          ? "i-lucide-arrow-down-wide-narrow"
-          : "i-lucide-arrow-up-narrow-wide",
-        class: "-mx-2.5",
+          ? 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-narrow-wide',
+        class: '-mx-2.5',
         onClick: () => {
-          filter.page = 1;
-          filter.sort_by = "shortTitle";
-          filter.sort_order = isSorted ? "desc" : "asc";
+          filter.page = 1
+          filter.sort_by = 'shortTitle'
+          filter.sort_order = isSorted ? 'desc' : 'asc'
         },
-      });
+      })
     },
     cell: ({ row }) => {
-      return h("div", { class: "flex flex-col gap-1" }, [
+      return h('div', { class: 'flex flex-col gap-1' }, [
         h(
-          "p",
-          { class: "font-medium text-(--ui-text-highlighted)" },
-          row.original.shortTitle
+          'p',
+          { class: 'font-medium text-(--ui-text-highlighted)' },
+          row.original.shortTitle,
         ),
-        h("p", { class: "text-xs" }, row.original.title),
-      ]);
+        h('p', { class: 'text-xs' }, row.original.title),
+      ])
     },
   },
   {
-    accessorKey: "status",
-    header: "Статус",
+    accessorKey: 'status',
+    header: 'Статус',
     cell: ({ row }) => {
-      const value = row.getValue("status");
+      const value = row.getValue('status')
       return h(
         UBadge,
         {
-          size: "md",
-          variant: "soft",
-          color: value === 'active' ? "success" : "error",
+          size: 'md',
+          variant: 'soft',
+          color: value === 'active' ? 'success' : 'error',
         },
-        () => (value === 'active' ? "активна" : "не активна")
-      );
+        () => (value === 'active' ? 'активна' : 'не активна'),
+      )
     },
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: ({ row }) => {
       return h(
-        "div",
-        { class: "text-right" },
+        'div',
+        { class: 'text-right' },
         h(
           UDropdownMenu,
           {
             content: {
-              align: "end",
+              align: 'end',
             },
             items: getRowItems(row),
           },
           () =>
             h(UButton, {
-              icon: "i-lucide-ellipsis-vertical",
-              color: "neutral",
-              variant: "ghost",
-              class: "ml-auto",
-            })
-        )
-      );
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              class: 'ml-auto',
+            }),
+        ),
+      )
     },
   },
-];
+]
 
 function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
   return [
     {
-      type: "label",
-      label: "Действия",
+      type: 'label',
+      label: 'Действия',
     },
     {
-      type: "separator",
+      type: 'separator',
     },
     {
-      type: "link",
-      icon: "i-lucide-pencil",
-      label: "Редактировать",
-      to: { name: "dashboard-categories-id", params: { id: row.original.id } },
+      type: 'link',
+      icon: 'i-lucide-pencil',
+      label: 'Редактировать',
+      to: { name: 'dashboard-categories-id', params: { id: row.original.id } },
     },
-  ];
+  ]
 }
 </script>
 
@@ -113,19 +113,24 @@ function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
   <UCard :ui="{
     root: !bordered ? '!border-0 ring-0 shadow-none rounded-none' : '',
     body: 'flex flex-col gap-4',
+    header: 'flex flex-row items-center',
   }">
     <template
       v-if="bordered"
       #header
     >
-      <h2
-        class="text-base text-pretty font-semibold text-(--ui-text-highlighted)"
-      >
-        Дочерние категории
-      </h2>
-      <p class="text-sm text-pretty text-(--ui-text-muted)">
-        Таблица дочерних категорий
-      </p>
+      <div class="flex flex-col">
+        <h2
+          class="text-base text-pretty font-semibold text-(--ui-text-highlighted)"
+        >
+          Подкатегории
+        </h2>
+        <p class="text-sm text-pretty text-(--ui-text-muted)">
+          Таблица подкатегорий
+        </p>
+      </div>
+
+      <CategoriesCreateModal />
     </template>
 
     <CategoriesFilters />
