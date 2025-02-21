@@ -9,7 +9,7 @@ export function useGetCategories() {
   const filter = reactive<CategoryFilter>({
     q: '',
     page: 1,
-    per_page: 10,
+    per_page: 5,
     sort_by: 'id',
     sort_order: 'desc',
     parent_id: route.params.id ? Number(route.params.id) : undefined,

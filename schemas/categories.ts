@@ -24,7 +24,7 @@ export const categoryFilterSchema = createFilterSchema(rootCategorySchema)
 export const createCategorySchema = z.object({
   shortTitle: stringField(3, 128).optional(),
   title: stringField(3, 128),
-  slug: stringField().optional().optional(),
+  slug: stringField().optional(),
   description: stringField().optional(),
   parentId: z.number().optional(),
   order: z.number().min(1, 'Минимальное значение поля - 1').optional(),

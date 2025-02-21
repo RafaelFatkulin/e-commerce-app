@@ -1,50 +1,20 @@
-import type { CreateCategory, RootCategory } from '~/types/categories'
+import type { RootCategory } from '~/types/categories'
 import type { ErrorResponse, SuccessResponse } from '~/types/response'
 import { useGetCategories } from './get-categories'
 
-export function useCreateCategory() {
+export function useDeleteCategory() {
   const nuxtApp = useNuxtApp()
-  const route = useRoute()
   const toast = useToast()
-  const id = route.params.id
 
-  const isOpen = useState<boolean>('is-create-category-modal-open', () => false)
-
-  const parentId = computed(() => {
-    if (!id)
-      return undefined
-    if (Array.isArray(id))
-      return undefined
-    return Number(id) || undefined
-  })
-
-  const state = reactive<Partial<CreateCategory>>({
-    title: '',
-    shortTitle: '',
-    description: '',
-    parentId: parentId.value,
-    slug: '',
-    order: 1,
-    status: 'active',
-  })
-
-  const resetForm = () => {
-    state.title = ''
-    state.shortTitle = ''
-    state.description = ''
-    state.parentId = parentId.value
-    state.slug = ''
-    state.order = 1
-    state.status = 'active'
-  }
+  const categoryToDelete = useState<RootCategory | null>('category-to-delete', () => null)
+  const isOpen = computed(() => !!categoryToDelete.value)
 
   const { refresh } = useGetCategories()
 
   const response = useAsyncData<SuccessResponse<RootCategory>, ErrorResponse>(
-    'create-category',
-    async () => nuxtApp.$api('/categories', {
-      method: 'POST',
-      body: state,
+    'delete-category',
+    async () => nuxtApp.$api(`/categories/${categoryToDelete.value?.id}`, {
+      method: 'DELETE',
     }),
     {
       immediate: false,
@@ -52,7 +22,20 @@ export function useCreateCategory() {
     },
   )
 
-  const { data, error, status } = response
+  watch(isOpen, () => {
+    console.log(isOpen.value);
+
+  })
+
+  const { data, status, error } = response
+
+  function setCategoryToDelete(category?: RootCategory) {
+    console.log('@category', category);
+
+    categoryToDelete.value = category || null
+
+    console.log('isOpen after set:', isOpen.value);
+  }
 
   watch(status, () => {
     if (status.value === 'success') {
@@ -62,9 +45,7 @@ export function useCreateCategory() {
         icon: 'i-lucide-circle-check',
         color: 'success',
       })
-      isOpen.value = false
-
-      resetForm()
+      setCategoryToDelete()
       refresh()
     }
     if (status.value === 'error') {
@@ -91,8 +72,8 @@ export function useCreateCategory() {
 
   return {
     isOpen,
-    state,
-    resetForm,
+    categoryToDelete,
+    setCategoryToDelete,
     ...response,
   }
 }

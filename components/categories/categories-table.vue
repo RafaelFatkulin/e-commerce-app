@@ -3,6 +3,7 @@ import type { UTable } from '#components'
 import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import type { RootCategory } from '~/types/categories'
+import { useDeleteCategory } from '~/composables/categories/delete-category'
 import { useGetCategories } from '~/composables/categories/get-categories'
 
 const { bordered = false } = defineProps<{
@@ -10,6 +11,7 @@ const { bordered = false } = defineProps<{
 }>()
 
 const { data, status, error, filter } = useGetCategories()
+const { setCategoryToDelete } = useDeleteCategory()
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
@@ -18,7 +20,7 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 const columns: TableColumn<RootCategory>[] = [
   {
     accessorKey: 'shortTitle',
-    header: ({ column }) => {
+    header: () => {
       const isSorted = filter.sort_order === 'asc'
 
       return h(UButton, {
@@ -105,6 +107,13 @@ function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
       label: 'Редактировать',
       to: { name: 'dashboard-categories-id', params: { id: row.original.id } },
     },
+    {
+      type: 'link',
+      icon: 'i-lucide-trash-2',
+      label: 'Удалить',
+      color: 'error' as const,
+      onSelect: () => setCategoryToDelete(row.original),
+    },
   ]
 }
 </script>
@@ -155,5 +164,7 @@ function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
       :total="data?.meta?.total"
       @update:page="(p) => (filter.page = p)"
     />
+
+    <CategoriesDeleteModal />
   </UCard>
 </template>
