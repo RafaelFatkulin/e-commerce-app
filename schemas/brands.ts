@@ -10,11 +10,14 @@ export const brandSchema = z.object({
     slug: z.string(),
     description: z.string().nullable(),
     order: z.number(),
-    isActive: brandStatusSchema
+    status: brandStatusSchema
 })
 export const createBrandSchema = z.object({
-    title: stringField(3, 128),
-    description: stringField().optional()
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().optional(),
+    files: z.array(z.instanceof(File))
+        .min(1, 'At least one file is required')
+        .refine(files => files.every(file => file.size <= 100 * 1024 * 1024), 'Each file must be less than 100MB')
 })
 export const editBrandSchema = z.object({
     title: stringField(3, 128).optional(),

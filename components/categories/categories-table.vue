@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { UTable } from '#components'
 import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import type { RootCategory } from '~/types/categories'

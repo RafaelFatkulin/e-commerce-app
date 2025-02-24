@@ -6,13 +6,18 @@ export function useNavigationLinks() {
   const items = useState<NavigationMenuItem[]>('navigation-links', () => [
     {
       label: 'Главная',
-      icon: 'i-heroicons-home',
+      icon: 'i-lucide-house',
       to: '/dashboard',
     },
     {
       label: 'Категории',
-      icon: 'i-heroicons-squares-2x2',
+      icon: 'i-lucide-grid-2x2',
       to: '/dashboard/categories',
+    },
+    {
+      label: 'Бренды',
+      icon: 'i-lucide-target',
+      to: '/dashboard/brands',
     },
   ])
 
