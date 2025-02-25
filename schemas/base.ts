@@ -44,3 +44,5 @@ export function enumField(values: [string, ...string[]], requiredMessage: string
     },
   })
 }
+
+export const statusSchema = z.enum(['active', 'not-active'])

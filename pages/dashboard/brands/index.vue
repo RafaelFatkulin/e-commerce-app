@@ -4,6 +4,10 @@ import BransTable from '~/components/brands/brands-table.vue';
 definePageMeta({
   layout: 'dashboard'
 })
+
+useHead(() => ({
+  title: 'Бренды'
+}))
 </script>
 
 <template>

@@ -24,6 +24,9 @@ export default defineNuxtConfig({
       apiUrl: 'http://localhost:8000',
     },
   },
+  image: {
+    domains: ['http://localhost:8000'],
+  }
   // routeRules: {
   //   "/dashboard": {
   //     ssr: false,

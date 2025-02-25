@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { stringField } from "./base";
+import { statusSchema, stringField } from "./base";
 import { createFilterSchema } from "./filter";
-
-export const brandStatusSchema = z.enum(['active', 'not-active'])
+import { mediaSchema } from "./media";
 
 export const brandSchema = z.object({
     id: z.number(),
@@ -10,7 +9,10 @@ export const brandSchema = z.object({
     slug: z.string(),
     description: z.string().nullable(),
     order: z.number(),
-    status: brandStatusSchema
+    status: statusSchema
+})
+export const brandWithMediaSchema = brandSchema.extend({
+    media: z.array(mediaSchema)
 })
 export const createBrandSchema = z.object({
     title: z.string().min(1, 'Title is required'),
@@ -24,6 +26,6 @@ export const editBrandSchema = z.object({
     slug: stringField(3, 255).optional(),
     description: stringField().optional(),
     order: z.number().min(1, 'Минимальное значение поля - 1').optional(),
-    status: brandStatusSchema.optional(),
+    status: statusSchema.optional(),
 })
 export const brandFilterSchema = createFilterSchema(brandSchema)

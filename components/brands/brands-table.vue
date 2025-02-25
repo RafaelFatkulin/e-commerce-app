@@ -3,18 +3,20 @@ import type { Row } from '@tanstack/vue-table'
 import type { DropdownMenuItem, TableColumn } from '@nuxt/ui';
 import { useGetBrands } from '~/composables/brands/get-brands';
 import type { Brand } from '~/types/brands';
+import { useDeleteBrand } from '~/composables/brands/delete-brand';
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const { data, status, error, filter } = useGetBrands()
+const { setBrandToDelete } = useDeleteBrand()
 
 const columns: TableColumn<Brand>[] = [
     {
         accessorKey: 'title',
         header: () => {
-            const isSorted = filter.sort_order === 'asc'
+            const isSorted = filter.value.sort_order === 'asc'
 
             return h(UButton, {
                 color: 'neutral',
@@ -25,9 +27,9 @@ const columns: TableColumn<Brand>[] = [
                     : 'i-lucide-arrow-up-narrow-wide',
                 class: '-mx-2.5',
                 onClick: () => {
-                    filter.page = 1
-                    filter.sort_by = 'title'
-                    filter.sort_order = isSorted ? 'desc' : 'asc'
+                    filter.value.page = 1
+                    filter.value.sort_by = 'title'
+                    filter.value.sort_order = isSorted ? 'desc' : 'asc'
                 },
             })
         },
@@ -97,13 +99,14 @@ function getRowItems(row: Row<Brand>): DropdownMenuItem[] {
             type: 'link',
             icon: 'i-lucide-pencil',
             label: 'Редактировать',
-            // to: { name: 'dashboard-brands-id', params: { id: row.original.id } },
+            to: { name: 'dashboard-brands-id', params: { id: row.original.id } },
         },
         {
             type: 'link',
             icon: 'i-lucide-trash-2',
             label: 'Удалить',
             color: 'error' as const,
+            onSelect: () => setBrandToDelete(row.original)
         },
     ]
 }
@@ -134,5 +137,7 @@ function getRowItems(row: Row<Brand>): DropdownMenuItem[] {
             :total="data?.meta?.total"
             @update:page="(p) => (filter.page = p)"
         />
+
+        <BrandsDeleteModal />
     </UCard>
 </template>

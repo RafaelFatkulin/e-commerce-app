@@ -1,31 +1,31 @@
-import type { RootCategory } from '~/types/categories'
-import type { ErrorResponse, SuccessResponse } from '~/types/response'
-import { useGetCategories } from './get-categories'
+import type { Brand } from "~/types/brands"
+import { useGetBrands } from "./get-brands"
+import type { ErrorResponse, SuccessResponse } from "~/types/response"
 
-export function useDeleteCategory() {
+export const useDeleteBrand = () => {
   const nuxtApp = useNuxtApp()
   const toast = useToast()
 
-  const categoryToDelete = useState<RootCategory | null>('category-to-delete', () => null)
-  const isOpen = computed(() => !!categoryToDelete.value)
+  const brandToDelete = useState<Brand | null>('brand-to-delete', () => null)
+  const isOpen = computed(() => !!brandToDelete.value)
 
-  const { refresh } = useGetCategories()
+  const { refresh } = useGetBrands()
 
-  const response = useAsyncData<SuccessResponse<RootCategory>, ErrorResponse>(
-    'delete-category',
-    async () => nuxtApp.$api(`/categories/${categoryToDelete.value?.id}`, {
-      method: 'DELETE',
+  const response = useAsyncData<SuccessResponse<Brand>, ErrorResponse>(
+    'delete-brand',
+    async () => nuxtApp.$api(`/brands/${brandToDelete.value?.id}/delete`, {
+      method: 'DELETE'
     }),
     {
       immediate: false,
-      lazy: true,
-    },
+      lazy: true
+    }
   )
 
   const { data, status, error } = response
 
-  function setCategoryToDelete(category?: RootCategory) {
-    categoryToDelete.value = category || null
+  function setBrandToDelete(brand?: Brand) {
+    brandToDelete.value = brand || null
   }
 
   watch(status, () => {
@@ -34,9 +34,9 @@ export function useDeleteCategory() {
         title: 'Успешно',
         description: data.value?.message as string,
         icon: 'i-lucide-circle-check',
-        color: 'success',
+        color: 'success'
       })
-      setCategoryToDelete()
+      setBrandToDelete()
       refresh()
     }
     if (status.value === 'error') {
@@ -63,8 +63,8 @@ export function useDeleteCategory() {
 
   return {
     isOpen,
-    categoryToDelete,
-    setCategoryToDelete,
-    ...response,
+    brandToDelete,
+    setBrandToDelete,
+    ...response
   }
 }

@@ -1,43 +1,41 @@
-import type { Brand, BrandFilter } from "~/types/brands"
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
+import type { Brand, BrandFilter } from "~/types/brands";
+import type { ErrorResponse, SuccessResponse } from "~/types/response";
 
 export const useGetBrands = () => {
-  const nuxtApp = useNuxtApp()
+  const nuxtApp = useNuxtApp();
 
-  const filter = reactive<BrandFilter>({
-    q: '',
+  // Инициализация фильтра через useState
+  const filter = useState<BrandFilter>("brands-filter", () => ({
+    q: "",
     page: 1,
     per_page: 10,
-    sort_by: 'id',
-    sort_order: 'desc',
-  })
+    sort_by: "id",
+    sort_order: "desc",
+  }));
 
-  const debouncedQ = refDebounced(
-    computed(() => filter.q),
-    500
-  )
+  // Вычисляемые параметры запроса
+  const queryParamsRaw = computed(() => ({
+    q: filter.value.q,
+    page: filter.value.page,
+    per_page: filter.value.per_page,
+    sort_by: filter.value.sort_by,
+    sort_order: filter.value.sort_order,
+  }));
 
-  const filterWithoutQ = computed(() => ({
-    ...filter,
-    q: undefined
-  }))
-
-  const queryParams = computed(() => ({
-    ...filterWithoutQ.value,
-    q: debouncedQ.value
-  }))
+  // Применяем дебаунсинг ко всему объекту queryParams
+  const queryParams = refDebounced(queryParamsRaw, 500);
 
   const response = useAsyncData<SuccessResponse<Brand[]>, ErrorResponse>(
-    'get-brands',
-    async () => nuxtApp.$api('/brands', {
-      params: queryParams.value
+    "get-brands",
+    async () => await nuxtApp.$api("/brands", {
+      params: queryParams.value,
     }),
     {
-      watch: [filterWithoutQ, debouncedQ],
+      watch: [queryParams], // Следим только за дебаунсед версией
       immediate: true,
-      dedupe: 'cancel'
+      dedupe: "defer", // "defer" откладывает запросы до завершения предыдущего
     }
-  )
+  );
 
-  return { ...response, filter }
-}
+  return { ...response, filter };
+};
