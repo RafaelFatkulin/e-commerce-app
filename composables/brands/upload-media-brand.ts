@@ -1,46 +1,22 @@
-import type { Brand, CreateBrand } from "~/types/brands"
-import { useGetBrands } from "./get-brands"
 import type { ErrorResponse, SuccessResponse } from "~/types/response"
 
-export const useCreateBrand = () => {
+export const useUploadMediaBrand = (id: number, refreshFn: () => Promise<void>) => {
   const nuxtApp = useNuxtApp()
   const toast = useToast()
 
-  // Modal state
-  const isOpen = useState<boolean>('is-create-brand-modal-open', () => false)
+  const filesArray = useState<File[]>('brand-files-to-upload', () => [])
 
-  // Form state
-  const state = reactive<Partial<CreateBrand>>({
-    title: '',
-    description: '',
-    files: [] as File[]
-  })
-
-  // Reset form state
-  const resetForm = () => {
-    state.title = ''
-    state.description = ''
-    state.files = []
-  }
-
-  // Refresh brands list after creation
-  const { refresh } = useGetBrands()
-
-  // Async data fetch for creating a brand
-  const response = useAsyncData<SuccessResponse<Brand>, ErrorResponse>(
-    'create-brand',
+  const response = useAsyncData<SuccessResponse<null>, ErrorResponse>(
+    'upload-brand-media',
     async () => {
-      // Create FormData for multipart/form-data upload
       const formData = new FormData()
-      if (state.title) formData.append('title', state.title)
-      if (state.description) formData.append('description', state.description)
-      if (state.files?.length) {
-        state.files.forEach((file, index) => {
+      if (filesArray.value?.length) {
+        filesArray.value.forEach((file, index) => {
           formData.append(`files[${index}]`, file)
         })
       }
 
-      return await nuxtApp.$api('/brands', {
+      return await nuxtApp.$api(`/brands/${id}/upload-media`, {
         method: 'POST',
         body: formData
       })
@@ -51,9 +27,13 @@ export const useCreateBrand = () => {
     }
   )
 
-  const { data, status, error, execute } = response
+  const { data, error, status, execute } = response
 
-  // Watch status changes to provide feedback
+  const handleMediaUpload = async (files: File[]) => {
+    filesArray.value = files
+    await execute()
+  }
+
   watch(status, (newStatus) => {
     if (newStatus === 'success') {
       toast.add({
@@ -62,9 +42,7 @@ export const useCreateBrand = () => {
         icon: 'i-lucide-circle-check',
         color: 'success'
       })
-      isOpen.value = false
-      resetForm()
-      refresh()
+      refreshFn()
     } else if (newStatus === 'error') {
       if (error.value?.data?.errors) {
         toast.add({
@@ -86,13 +64,9 @@ export const useCreateBrand = () => {
     }
   })
 
+
   return {
-    isOpen,
-    state,
-    resetForm,
-    execute, // Expose execute to trigger the request manually
-    status,
-    data,
-    error
+    ...response,
+    handleMediaUpload
   }
 }

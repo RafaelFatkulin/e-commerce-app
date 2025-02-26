@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { useEditBrand } from '~/composables/brands/edit-brand';
-import { useEditCategory } from '~/composables/categories/edit-category';
 import { editBrandSchema } from '~/schemas/brands';
 import type { Status } from '~/types/base';
 import type { BrandWithMedia, EditBrand } from '~/types/brands';
 
 const { brand } = defineProps<{
-  brand: BrandWithMedia
+  brand: BrandWithMedia,
 }>()
+
+const emit = defineEmits<{
+  (e: 'refresh'): Promise<void>
+}>()
+
 const state = reactive<Partial<EditBrand>>({
   title: brand.title,
   description: brand.description || undefined,
@@ -38,7 +42,7 @@ const statusVariants = ref([
 function getChip(value: Status) {
   return statusVariants.value.find(item => item.value === value)?.chip
 }
-const { status, execute } = await useEditBrand(state)
+const { data, error, status, execute } = await useEditBrand(state)
 const handleTitleChange = () => {
   if (state.title) {
     state.slug = translit(state.title)
@@ -47,6 +51,28 @@ const handleTitleChange = () => {
 const onSubmit = async () => {
   await execute()
 }
+const toast = useToast()
+watch(status, () => {
+  if (status.value === 'success') {
+    toast.add({
+      title: 'Успешно',
+      description: data.value?.message as string,
+      icon: 'i-lucide-circle-check',
+      color: 'success'
+    })
+
+    emit('refresh')
+  }
+
+  if (status.value === 'error') {
+    toast.add({
+      title: 'Ошибка',
+      description: error.value?.data?.message as string,
+      icon: 'i-lucide-circle-x',
+      color: 'error',
+    })
+  }
+})
 </script>
 
 <template>

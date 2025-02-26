@@ -11,3 +11,10 @@ export const mediaSchema = z.object({
     order: z.number(),
     status: statusSchema
 })
+
+export const mediaOrderChangeSchema = z.array(
+    z.object({
+        id: z.number(),
+        order: z.number()
+    })
+)

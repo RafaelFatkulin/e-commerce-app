@@ -8,7 +8,7 @@ export const useGetBrand = (id: number) => {
     `get-category-${id}`,
     async () => nuxtApp.$api(`/brands/${id}`),
     {
-      immediate: true
+      immediate: true,
     }
   )
 }

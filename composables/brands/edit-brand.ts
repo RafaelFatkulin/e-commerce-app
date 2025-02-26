@@ -10,8 +10,6 @@ export const useEditBrand = async (bodyData: EditBrand) => {
 
   const toast = useToast()
 
-  const { refresh } = useGetBrand(Number(id))
-
   const response = await useAsyncData<SuccessResponse<Brand>, ErrorResponse>(
     `edit-brand-${id}`,
     async () => nuxtApp.$api(`/brands/${id}/edit`, {
@@ -20,30 +18,6 @@ export const useEditBrand = async (bodyData: EditBrand) => {
     }),
     { immediate: false, lazy: true }
   )
-
-  const { data, status, error } = response
-
-  watch(status, () => {
-    if (status.value === 'success') {
-      toast.add({
-        title: 'Успешно',
-        description: data.value?.message as string,
-        icon: 'i-lucide-circle-check',
-        color: 'success'
-      })
-
-      refresh()
-    }
-
-    if (status.value === 'error') {
-      toast.add({
-        title: 'Ошибка',
-        description: error.value?.data?.message as string,
-        icon: 'i-lucide-circle-x',
-        color: 'error',
-      })
-    }
-  })
 
   return {
     ...response

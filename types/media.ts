@@ -1,4 +1,5 @@
 import type { z } from "zod";
-import type { mediaSchema } from "~/schemas/media";
+import type { mediaOrderChangeSchema, mediaSchema } from "~/schemas/media";
 
 export type Media = z.output<typeof mediaSchema>
+export type MediaOrderChange = z.output<typeof mediaOrderChangeSchema>
