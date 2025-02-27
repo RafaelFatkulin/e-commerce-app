@@ -2,6 +2,8 @@ import type { Brand, BrandFilter } from "~/types/brands";
 import type { ErrorResponse, SuccessResponse } from "~/types/response";
 
 export const useGetBrands = () => {
+  console.log('useGetBrands setup');
+
   const nuxtApp = useNuxtApp();
 
   // Инициализация фильтра через useState
@@ -21,6 +23,7 @@ export const useGetBrands = () => {
     sort_by: filter.value.sort_by,
     sort_order: filter.value.sort_order,
   }));
+  watch(queryParamsRaw, console.log)
 
   // Применяем дебаунсинг ко всему объекту queryParams
   const queryParams = refDebounced(queryParamsRaw, 500);

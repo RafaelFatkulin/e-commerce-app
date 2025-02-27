@@ -1,8 +1,12 @@
 import type { ErrorResponse, SuccessResponse } from "~/types/response"
+import { useGetBrand } from "./get-brand"
 
-export const useUploadMediaBrand = (id: number, refreshFn: () => Promise<void>) => {
+export const useUploadMediaBrand = () => {
   const nuxtApp = useNuxtApp()
+  const route = useRoute()
   const toast = useToast()
+
+  const { refresh } = useGetBrand()
 
   const filesArray = useState<File[]>('brand-files-to-upload', () => [])
 
@@ -16,7 +20,7 @@ export const useUploadMediaBrand = (id: number, refreshFn: () => Promise<void>) 
         })
       }
 
-      return await nuxtApp.$api(`/brands/${id}/upload-media`, {
+      return await nuxtApp.$api(`/brands/${Number(route.params.id)}/upload-media`, {
         method: 'POST',
         body: formData
       })
@@ -34,7 +38,7 @@ export const useUploadMediaBrand = (id: number, refreshFn: () => Promise<void>) 
     await execute()
   }
 
-  watch(status, (newStatus) => {
+  watch(status, (newStatus, oldStatus) => {
     if (newStatus === 'success') {
       toast.add({
         title: 'Успешно',
@@ -42,7 +46,7 @@ export const useUploadMediaBrand = (id: number, refreshFn: () => Promise<void>) 
         icon: 'i-lucide-circle-check',
         color: 'success'
       })
-      refreshFn()
+      refresh()
     } else if (newStatus === 'error') {
       if (error.value?.data?.errors) {
         toast.add({
@@ -63,7 +67,6 @@ export const useUploadMediaBrand = (id: number, refreshFn: () => Promise<void>) 
       }
     }
   })
-
 
   return {
     ...response,

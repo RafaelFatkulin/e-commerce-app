@@ -1,23 +1,20 @@
 <!-- components/MediaGallery.vue -->
 <script lang="ts" setup>
+import { BrandsGalleryItemButtons } from '#components';
+import type { DropdownMenuItem } from '@nuxt/ui';
 import { ref, computed } from 'vue';
+import { useGetBrand } from '~/composables/brands/get-brand';
 import { useMediaOrderChange } from '~/composables/media/media-order-change';
+import { useMediaStatus } from '~/composables/media/media-status';
 import type { Media } from '~/types/media';
 
-const { media } = defineProps<{
-  media: Media[];
-}>();
-
-const emit = defineEmits<{
-  (e: 'refresh'): Promise<void>;
-  (e: 'add-files', files: File[]): void;
-}>();
-
-const { data, error, status, updateMediaOrder } = useMediaOrderChange();
+const route = useRoute()
 const toast = useToast();
+const { data, error, status, updateMediaOrder } = useMediaOrderChange();
+const { data: brandData, refresh } = await useGetBrand()
 
 const galleryItems = computed(() =>
-  [...media]
+  [...brandData.value?.data.media!]
     .filter(item => item.type === 'image')
     .sort((a, b) => a.order - b.order)
 );
@@ -59,10 +56,6 @@ const onDragEnd = () => {
   dragOverItem.value = null;
 };
 
-const handleFilesSelected = (files: File[]) => {
-  emit('add-files', files);
-};
-
 watch(status, (newStatus) => {
   if (newStatus === 'success') {
     toast.add({
@@ -71,7 +64,7 @@ watch(status, (newStatus) => {
       icon: 'i-lucide-circle-check',
       color: 'success'
     });
-    emit('refresh');
+    refresh()
   }
 
   if (newStatus === 'error') {
@@ -83,6 +76,19 @@ watch(status, (newStatus) => {
     });
   }
 });
+
+const tempMedia = ref<Media>()
+const items = ref<DropdownMenuItem[]>([
+  {
+    label: 'Изменить статус',
+    icon: 'i-lucide-eye',
+    slot: 'status'
+  },
+  {
+    label: 'Удалить',
+    icon: 'i-lucide-trash-2',
+  },
+])
 </script>
 
 <template>
@@ -98,7 +104,9 @@ watch(status, (newStatus) => {
       </p>
     </template>
 
-    <div class="grid grid-cols-5 gap-2">
+    <div
+      class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-4 2xl:grid-cols-5 gap-2"
+    >
       <BrandsGalleryItem
         v-for="(item, index) in galleryItems"
         :key="item.path"
@@ -111,14 +119,33 @@ watch(status, (newStatus) => {
         @drop="onDrop"
         @dragend="onDragEnd"
       >
-        <BrandsGalleryStatusButton />
-        <BrandsGalleryDeleteButton
-          :media="item"
-          @refresh="emit('refresh')"
-        />
+        <BrandsGalleryItemButtons>
+
+          <BrandsGalleryStatusModal
+            :media="item"
+            dismissible
+          />
+          <BrandsGalleryDeleteModal :media="item" />
+        </BrandsGalleryItemButtons>
+
+        <UDropdownMenu :items>
+          <UButton
+            icon="i-lucide-ellipsis-vertical"
+            color="neutral"
+            variant="ghost"
+            @click="tempMedia = item"
+          />
+
+          <template #status>
+            <BrandsGalleryStatusModal
+              :media="tempMedia!"
+              labelled
+            />
+          </template>
+        </UDropdownMenu>
       </BrandsGalleryItem>
 
-      <BrandsGalleryAddButton @files-selected="handleFilesSelected" />
+      <BrandsGalleryAddButton />
     </div>
   </UCard>
 </template>

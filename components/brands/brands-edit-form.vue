@@ -1,23 +1,18 @@
 <script lang="ts" setup>
 import { useEditBrand } from '~/composables/brands/edit-brand';
+import { useGetBrand } from '~/composables/brands/get-brand';
 import { editBrandSchema } from '~/schemas/brands';
 import type { Status } from '~/types/base';
-import type { BrandWithMedia, EditBrand } from '~/types/brands';
+import type { EditBrand } from '~/types/brands';
 
-const { brand } = defineProps<{
-  brand: BrandWithMedia,
-}>()
-
-const emit = defineEmits<{
-  (e: 'refresh'): Promise<void>
-}>()
+const { data: brandData, refresh } = await useGetBrand()
 
 const state = reactive<Partial<EditBrand>>({
-  title: brand.title,
-  description: brand.description || undefined,
-  slug: brand.slug,
-  order: brand.order,
-  status: brand.status
+  title: brandData.value?.data.title,
+  description: brandData.value?.data.description || undefined,
+  slug: brandData.value?.data.slug,
+  order: brandData.value?.data.order,
+  status: brandData.value?.data.status
 })
 const statusVariants = ref([
   {
@@ -52,7 +47,7 @@ const onSubmit = async () => {
   await execute()
 }
 const toast = useToast()
-watch(status, () => {
+watch(status, async () => {
   if (status.value === 'success') {
     toast.add({
       title: 'Успешно',
@@ -61,7 +56,7 @@ watch(status, () => {
       color: 'success'
     })
 
-    emit('refresh')
+    await refresh()
   }
 
   if (status.value === 'error') {

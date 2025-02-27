@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useGetBrand } from '~/composables/brands/get-brand';
-import { useUploadMediaBrand } from '~/composables/brands/upload-media-brand';
 
 definePageMeta({
   layout: 'dashboard'
@@ -9,10 +8,7 @@ definePageMeta({
 const route = useRoute()
 const backLink = '/dashboard/brands'
 
-const id = computed(() => Number(route.params.id))
-
-const { data, refresh } = await useGetBrand(id.value)
-const { handleMediaUpload } = useUploadMediaBrand(id.value, refresh)
+const { data } = await useGetBrand()
 
 useHead(() => ({
   title: `${data.value?.data.title} - Бренды`
@@ -29,18 +25,9 @@ useHead(() => ({
       </div>
     </template>
 
-    <div class="p-4 grid gap-8 grid-cols-1 lg:grid-cols-2 items-start">
-      <BrandsGallery
-        v-if="data?.data"
-        :media="data?.data.media"
-        @refresh="refresh"
-        @add-files="handleMediaUpload"
-      />
-      <BrandsEditForm
-        v-if="data?.data"
-        :brand="data?.data"
-        @refresh="refresh"
-      />
+    <div class="p-4 grid gap-8 grid-cols-1 xl:grid-cols-2 items-start">
+      <BrandsEditForm />
+      <BrandsGallery />
     </div>
   </DashboardPage>
 </template>

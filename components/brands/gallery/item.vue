@@ -38,15 +38,16 @@ const getPath = (path: string) => {
     @dragleave.prevent
   >
     <div
-      class="absolute top-1 right-1 translate-x-full transition-transform group-hover:translate-x-0 flex flex-row"
-      :class="{ 'translate-x-0': isDragging }"
+      class="absolute top-1 right-1 sm:opacity-0 transition-opacity duration-300 opacity-100 sm:group-hover:opacity-100 group-hover:pointer-events-auto"
     >
       <slot />
     </div>
     <NuxtImg
       :src="getPath(item.path)"
       :alt="item.alt"
+      preload
       class="object-contain m-auto select-none w-full aspect-video"
+      :class="{ 'opacity-25': item.status === 'not-active' }"
     />
   </div>
 </template>

@@ -1,14 +1,16 @@
 import type { BrandWithMedia } from "~/types/brands"
 import type { ErrorResponse, SuccessResponse } from "~/types/response"
 
-export const useGetBrand = (id: number) => {
+export const useGetBrand = () => {
   const nuxtApp = useNuxtApp()
+  const route = useRoute()
 
   return useAsyncData<SuccessResponse<BrandWithMedia>, ErrorResponse>(
-    `get-category-${id}`,
-    async () => nuxtApp.$api(`/brands/${id}`),
+    `get-category-${route.params.id}`,
+    async () => nuxtApp.$api(`/brands/${route.params.id}`),
     {
       immediate: true,
+      dedupe: 'defer'
     }
   )
 }

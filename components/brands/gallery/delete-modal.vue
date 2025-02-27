@@ -1,18 +1,16 @@
 <script lang="ts" setup>
+import { useGetBrand } from '~/composables/brands/get-brand';
 import { useMediaDelete } from '~/composables/media/media-delete';
 import type { Media } from '~/types/media';
 
-const { media } = defineProps<{
+const { media, labelled = false } = defineProps<{
   media: Media
+  labelled?: boolean
+
 }>()
 
-const emits = defineEmits<{
-  (e: 'refresh'): void
-}>()
-
+const route = useRoute()
 const toast = useToast()
-
-const descriprion = computed(() => `Вы действительно хотите удалить "${media.alt}"?`)
 
 const {
   isOpen,
@@ -21,13 +19,18 @@ const {
   error,
   status,
   execute,
-} = useMediaDelete(media)
+} = useMediaDelete()
+const { refresh } = useGetBrand(Number(route.params.id))
+
+const description = ref<string>('')
+
+async function openModal() {
+  setMediaToDelete(media)
+  description.value = `Вы действительно хотите удалить "${media.alt}"?`
+}
 
 async function closeModal() {
   setMediaToDelete()
-}
-async function openModal() {
-  setMediaToDelete(media)
 }
 
 async function onClick() {
@@ -43,7 +46,7 @@ watch(status, () => {
       color: 'success'
     })
     setMediaToDelete()
-    emits('refresh')
+    refresh()
   }
 
   if (status.value === 'error') {
@@ -73,20 +76,23 @@ watch(status, () => {
 
 <template>
   <UModal
-    v-modal:open="isOpen"
+    v-model:open="isOpen"
     @update:open="closeModal"
     title="Удаление медиа-файла"
-    :description="descriprion"
+    :description
   >
-    <UButton
-      @click="openModal"
-      icon="i-lucide-x"
-      variant="ghost"
-      color="error"
-    />
-
+    <UTooltip text="Удалить изображение">
+      <UButton
+        @click="openModal"
+        icon="i-lucide-x"
+        variant="ghost"
+        color="error"
+        :label="labelled ? 'Удалить изображение' : ''"
+      />
+    </UTooltip>
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">
+
         <UButton
           icon="i-lucide-trash-2"
           color="error"
