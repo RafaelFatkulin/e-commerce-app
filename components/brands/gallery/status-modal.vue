@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useGetBrand } from '~/composables/brands/get-brand';
-import { useMediaStatus } from '~/composables/media/media-status';
+import { useGetBrand } from '~/composables/brands/get-brand'
+import { useMediaStatus } from '~/composables/media/media-status'
 
 const toast = useToast()
 
@@ -11,13 +11,12 @@ const {
   data,
   error,
   status,
-  execute
+  execute,
 } = useMediaStatus()
 
 const { refresh } = useGetBrand()
 
 const description = ref<string>('')
-
 
 watch(mediaToUpdateStatus, (newMedia) => {
   if (newMedia) {
@@ -40,7 +39,7 @@ watch(status, async () => {
       title: 'Успешно',
       description: data.value?.message as string,
       icon: 'i-lucide-circle-check',
-      color: 'success'
+      color: 'success',
     })
     setMediaToUpdateStatus()
     await refresh()
@@ -74,13 +73,12 @@ watch(status, async () => {
 <template>
   <UModal
     v-model:open="isOpen"
-    @update:open="(val) => isOpen = val"
     title="Изменение статуса медиа-файла"
     :description
+    @update:open="(val) => isOpen = val"
   >
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">
-
         <UButton
           icon="i-lucide-arrow-left-right"
           color="success"

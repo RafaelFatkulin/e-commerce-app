@@ -4,6 +4,13 @@ import { useCategoryTree } from '../categories/category-tree'
 export function useHeaderCategoriesMenu() {
   const { data } = useCategoryTree()
 
+  const generateMenuSubitems = (categories: Category[]) => {
+    return categories.map(item => ({
+      label: item.shortTitle,
+      to: { name: 'products-slug', params: { slug: item.slug } },
+    }))
+  }
+
   const generateMenuItems = (categories: Category[]) => {
     const items = categories.map(item => ({
       id: item.id,
@@ -16,13 +23,6 @@ export function useHeaderCategoriesMenu() {
     return items
   }
 
-  const generateMenuSubitems = (categories: Category[]) => {
-    return categories.map(item => ({
-      label: item.shortTitle,
-      to: { name: 'products-slug', params: { slug: item.slug } },
-    }))
-  }
-
   const categories = computed(() => generateMenuItems(data.value ? data.value.data : []))
 
   const activeCategoryId = ref<number | null>(null)
@@ -33,22 +33,6 @@ export function useHeaderCategoriesMenu() {
   const isActive = (categoryId: number) => activeCategoryId.value === categoryId
 
   let hideTimer: NodeJS.Timeout | null = null
-
-  const toggleCategory = (categoryId: number | null, show: boolean = true) => {
-    if (!categoryId) {
-      clearHideTimer()
-      activeCategoryId.value = null
-      return
-    }
-
-    if (isActive(categoryId)) {
-      startHideTimer()
-    }
-    else {
-      clearHideTimer()
-      activeCategoryId.value = categoryId
-    }
-  }
 
   const startHideTimer = () => {
     clearHideTimer()
@@ -66,6 +50,22 @@ export function useHeaderCategoriesMenu() {
 
   const hideMenuInstantly = () => {
     activeCategoryId.value = null
+  }
+
+  const toggleCategory = (categoryId: number | null) => {
+    if (!categoryId) {
+      clearHideTimer()
+      activeCategoryId.value = null
+      return
+    }
+
+    if (isActive(categoryId)) {
+      startHideTimer()
+    }
+    else {
+      clearHideTimer()
+      activeCategoryId.value = categoryId
+    }
   }
 
   return {

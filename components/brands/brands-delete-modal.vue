@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useDeleteBrand } from '~/composables/brands/delete-brand';
+import { useDeleteBrand } from '~/composables/brands/delete-brand'
 
 const { isOpen, brandToDelete, setBrandToDelete, execute, status } = useDeleteBrand()
 
@@ -16,9 +16,9 @@ async function closeModal() {
 <template>
   <UModal
     v-model:open="isOpen"
-    @update:open="closeModal()"
     title="Удаление бренда"
     :description
+    @update:open="closeModal()"
   >
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">

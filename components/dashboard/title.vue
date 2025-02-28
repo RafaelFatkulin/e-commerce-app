@@ -2,10 +2,6 @@
 const {
   backTo,
 } = defineProps<{ backTo?: string }>()
-
-const router = useRouter()
-
-const handleButton = () => router.back()
 </script>
 
 <template>

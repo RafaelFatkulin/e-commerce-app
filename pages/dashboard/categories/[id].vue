@@ -23,9 +23,6 @@ const backLink = computed(() => {
   }
   return '/dashboard/categories'
 })
-watch(error, () => {
-  error.value?.data
-})
 </script>
 
 <template>

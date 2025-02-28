@@ -1,5 +1,5 @@
-import type { z } from "zod";
-import type { brandFilterSchema, brandSchema, brandWithMediaSchema, createBrandSchema, editBrandSchema } from "~/schemas/brands";
+import type { z } from 'zod'
+import type { brandFilterSchema, brandSchema, brandWithMediaSchema, createBrandSchema, editBrandSchema } from '~/schemas/brands'
 
 export type Brand = z.output<typeof brandSchema>
 export type BrandWithMedia = z.output<typeof brandWithMediaSchema>

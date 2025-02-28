@@ -1,59 +1,60 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { useGetBrand } from '~/composables/brands/get-brand';
-import { useMediaDelete } from '~/composables/media/media-delete';
-import { useMediaOrderChange } from '~/composables/media/media-order-change';
-import { useMediaStatus } from '~/composables/media/media-status';
-import type { Media } from '~/types/media';
+import { computed, ref } from 'vue'
+import { useGetBrand } from '~/composables/brands/get-brand'
+import { useMediaDelete } from '~/composables/media/media-delete'
+import { useMediaOrderChange } from '~/composables/media/media-order-change'
+import { useMediaStatus } from '~/composables/media/media-status'
 
-const toast = useToast();
-const { data, error, status, updateMediaOrder } = useMediaOrderChange();
+const toast = useToast()
+const { data, error, status, updateMediaOrder } = useMediaOrderChange()
 const { data: brandData, refresh } = await useGetBrand()
 const { setMediaToUpdateStatus } = useMediaStatus()
 const { setMediaToDelete } = useMediaDelete()
 
-const galleryItems = computed(() =>
-  [...brandData.value?.data.media!]
-    .filter(item => item.type === 'image')
-    .sort((a, b) => a.order - b.order)
-);
+const galleryItems = computed(
+  () => brandData.value?.data.media
+    ? [...brandData.value?.data.media]
+      .filter(item => item.type === 'image')
+      .sort((a, b) => a.order - b.order) : []
+)
 
-const draggedItem = ref<number | null>(null);
-const dragOverItem = ref<number | null>(null);
+const draggedItem = ref<number | null>(null)
+const dragOverItem = ref<number | null>(null)
 
-const onDragStart = (index: number) => {
-  draggedItem.value = index;
-};
+function onDragStart(index: number) {
+  draggedItem.value = index
+}
 
-const onDragOver = (index: number) => {
-  dragOverItem.value = index;
-};
+function onDragOver(index: number) {
+  dragOverItem.value = index
+}
 
-const onDrop = (dropIndex: number) => {
-  if (draggedItem.value === null) return;
+function onDrop(dropIndex: number) {
+  if (draggedItem.value === null)
+    return
 
-  const newItems = [...galleryItems.value];
-  const [dragged] = newItems.splice(draggedItem.value, 1);
-  newItems.splice(dropIndex, 0, dragged);
+  const newItems = [...galleryItems.value]
+  const [dragged] = newItems.splice(draggedItem.value, 1)
+  newItems.splice(dropIndex, 0, dragged)
 
   const updatedItems = newItems.map((item, index) => ({
     ...item,
-    order: index + 1
-  }));
+    order: index + 1,
+  }))
 
-  draggedItem.value = null;
-  dragOverItem.value = null;
+  draggedItem.value = null
+  dragOverItem.value = null
 
   updateMediaOrder(updatedItems.map(item => ({
     id: item.id,
-    order: item.order
-  })));
-};
+    order: item.order,
+  })))
+}
 
-const onDragEnd = () => {
-  draggedItem.value = null;
-  dragOverItem.value = null;
-};
+function onDragEnd() {
+  draggedItem.value = null
+  dragOverItem.value = null
+}
 
 watch(status, (newStatus) => {
   if (newStatus === 'success') {
@@ -61,8 +62,8 @@ watch(status, (newStatus) => {
       title: 'Успешно',
       description: data.value?.message as string,
       icon: 'i-lucide-circle-check',
-      color: 'success'
-    });
+      color: 'success',
+    })
     refresh()
   }
 
@@ -71,10 +72,10 @@ watch(status, (newStatus) => {
       title: 'Ошибка',
       description: error.value?.data?.message as string,
       icon: 'i-lucide-circle-x',
-      color: 'error'
-    });
+      color: 'error',
+    })
   }
-});
+})
 </script>
 
 <template>

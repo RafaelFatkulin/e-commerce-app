@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useCreateBrand } from '~/composables/brands/create-brand';
-import { createBrandSchema } from '~/schemas/brands';
+import { useCreateBrand } from '~/composables/brands/create-brand'
+import { createBrandSchema } from '~/schemas/brands'
 
 const { isOpen, state, status, execute } = useCreateBrand()
 
@@ -12,7 +12,8 @@ function handleFilesChange(event: Event) {
   const target = event.target as HTMLInputElement
   if (target.files) {
     state.files = Array.from(target.files)
-  } else {
+  }
+  else {
     state.files = []
   }
 }

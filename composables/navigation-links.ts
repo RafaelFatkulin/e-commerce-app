@@ -1,8 +1,6 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 export function useNavigationLinks() {
-  const route = useRoute()
-
   const items = useState<NavigationMenuItem[]>('navigation-links', () => [
     {
       label: 'Главная',
@@ -18,6 +16,11 @@ export function useNavigationLinks() {
       label: 'Бренды',
       icon: 'i-lucide-target',
       to: '/dashboard/brands',
+    },
+    {
+      label: 'Товары',
+      icon: 'i-lucide-shirt',
+      to: '/dashboard/products',
     },
   ])
 

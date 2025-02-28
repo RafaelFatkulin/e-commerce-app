@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import { useGetBrand } from '~/composables/brands/get-brand';
+import { useGetBrand } from '~/composables/brands/get-brand'
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
 })
 
-const route = useRoute()
 const backLink = '/dashboard/brands'
 
 const { data } = await useGetBrand()
 
 useHead(() => ({
-  title: `${data.value?.data.title} - Бренды`
+  title: `${data.value?.data.title} - Бренды`,
 }))
 </script>
 

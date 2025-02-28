@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useGetBrand } from '~/composables/brands/get-brand';
-import { useMediaDelete } from '~/composables/media/media-delete';
+import { useGetBrand } from '~/composables/brands/get-brand'
+import { useMediaDelete } from '~/composables/media/media-delete'
 
 const toast = useToast()
 
@@ -37,7 +37,7 @@ watch(status, () => {
       title: 'Успешно',
       description: data.value?.message as string,
       icon: 'i-lucide-circle-check',
-      color: 'success'
+      color: 'success',
     })
     setMediaToDelete()
     refresh()
@@ -71,13 +71,12 @@ watch(status, () => {
 <template>
   <UModal
     v-model:open="isOpen"
-    @update:open="closeModal"
     title="Удаление медиа-файла"
     :description
+    @update:open="closeModal"
   >
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">
-
         <UButton
           icon="i-lucide-trash-2"
           color="error"

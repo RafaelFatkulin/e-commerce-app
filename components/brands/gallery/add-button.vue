@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useUploadMediaBrand } from '~/composables/brands/upload-media-brand';
+import { ref } from 'vue'
+import { useUploadMediaBrand } from '~/composables/brands/upload-media-brand'
 
 const { handleMediaUpload } = useUploadMediaBrand()
 
-const fileInput = ref<HTMLInputElement | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null)
 
-const handleClick = () => {
-  fileInput.value?.click();
-};
+function handleClick() {
+  fileInput.value?.click()
+}
 
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
+function handleFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
 
   if (target.files && target.files.length > 0) {
-    const filesArray = Array.from(target.files);
+    const filesArray = Array.from(target.files)
 
     handleMediaUpload(filesArray)
 
-    target.value = '';
+    target.value = ''
   }
-};
+}
 </script>
 
 <template>
@@ -38,6 +38,6 @@ const handleFileChange = (event: Event) => {
       multiple
       class="hidden"
       @change="handleFileChange"
-    />
+    >
   </div>
 </template>

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useEditBrand } from '~/composables/brands/edit-brand';
-import { useGetBrand } from '~/composables/brands/get-brand';
-import { editBrandSchema } from '~/schemas/brands';
-import type { Status } from '~/types/base';
-import type { EditBrand } from '~/types/brands';
+import type { Status } from '~/types/base'
+import type { EditBrand } from '~/types/brands'
+import { useEditBrand } from '~/composables/brands/edit-brand'
+import { useGetBrand } from '~/composables/brands/get-brand'
+import { editBrandSchema } from '~/schemas/brands'
 
 const { data: brandData, refresh } = await useGetBrand()
 
@@ -12,7 +12,7 @@ const state = reactive<Partial<EditBrand>>({
   description: brandData.value?.data.description || undefined,
   slug: brandData.value?.data.slug,
   order: brandData.value?.data.order,
-  status: brandData.value?.data.status
+  status: brandData.value?.data.status,
 })
 const statusVariants = ref([
   {
@@ -38,12 +38,12 @@ function getChip(value: Status) {
   return statusVariants.value.find(item => item.value === value)?.chip
 }
 const { data, error, status, execute } = await useEditBrand(state)
-const handleTitleChange = () => {
+function handleTitleChange() {
   if (state.title) {
     state.slug = translit(state.title)
   }
 }
-const onSubmit = async () => {
+async function onSubmit() {
   await execute()
 }
 const toast = useToast()
@@ -53,7 +53,7 @@ watch(status, async () => {
       title: 'Успешно',
       description: data.value?.message as string,
       icon: 'i-lucide-circle-check',
-      color: 'success'
+      color: 'success',
     })
 
     await refresh()

@@ -1,8 +1,8 @@
-import type { Status } from "~/types/base"
-import type { Media } from "~/types/media"
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
+import type { Status } from '~/types/base'
+import type { Media } from '~/types/media'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
 
-export const useMediaStatus = () => {
+export function useMediaStatus() {
   const nuxtApp = useNuxtApp()
 
   const mediaToUpdateStatus = useState<Media | null>('media-to-update-status', () => null)
@@ -21,19 +21,19 @@ export const useMediaStatus = () => {
     async () => nuxtApp.$api<SuccessResponse<null>>(`/media/${mediaToUpdateStatus.value?.id}/change-status`, {
       method: 'PATCH',
       body: {
-        status: (mediaToUpdateStatus.value?.status === 'active' ? 'not-active' : 'active') as Status
-      }
+        status: (mediaToUpdateStatus.value?.status === 'active' ? 'not-active' : 'active') as Status,
+      },
     }),
     {
       immediate: false,
-      lazy: true
-    }
+      lazy: true,
+    },
   )
 
   return {
     ...response,
     setMediaToUpdateStatus,
     mediaToUpdateStatus,
-    isOpen
+    isOpen,
   }
 }

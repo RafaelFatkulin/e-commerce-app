@@ -1,8 +1,8 @@
-import type { Brand, CreateBrand } from "~/types/brands"
-import { useGetBrands } from "./get-brands"
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
+import type { Brand, CreateBrand } from '~/types/brands'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
+import { useGetBrands } from './get-brands'
 
-export const useCreateBrand = () => {
+export function useCreateBrand() {
   const nuxtApp = useNuxtApp()
   const toast = useToast()
 
@@ -13,7 +13,7 @@ export const useCreateBrand = () => {
   const state = reactive<Partial<CreateBrand>>({
     title: '',
     description: '',
-    files: [] as File[]
+    files: [] as File[],
   })
 
   // Reset form state
@@ -32,8 +32,10 @@ export const useCreateBrand = () => {
     async () => {
       // Create FormData for multipart/form-data upload
       const formData = new FormData()
-      if (state.title) formData.append('title', state.title)
-      if (state.description) formData.append('description', state.description)
+      if (state.title)
+        formData.append('title', state.title)
+      if (state.description)
+        formData.append('description', state.description)
       if (state.files?.length) {
         state.files.forEach((file, index) => {
           formData.append(`files[${index}]`, file)
@@ -42,13 +44,13 @@ export const useCreateBrand = () => {
 
       return await nuxtApp.$api('/brands', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
     },
     {
       immediate: false,
-      lazy: true
-    }
+      lazy: true,
+    },
   )
 
   const { data, status, error, execute } = response
@@ -60,12 +62,13 @@ export const useCreateBrand = () => {
         title: 'Успешно',
         description: data.value?.message ?? 'Бренд успешно создан',
         icon: 'i-lucide-circle-check',
-        color: 'success'
+        color: 'success',
       })
       isOpen.value = false
       resetForm()
       refresh()
-    } else if (newStatus === 'error') {
+    }
+    else if (newStatus === 'error') {
       if (error.value?.data?.errors) {
         toast.add({
           title: error.value?.data?.message as string ?? 'Ошибка',
@@ -73,14 +76,15 @@ export const useCreateBrand = () => {
             return acc.concat(`${curr.message}\n`)
           }, ''),
           icon: 'i-lucide-circle-x',
-          color: 'error'
+          color: 'error',
         })
-      } else {
+      }
+      else {
         toast.add({
           title: 'Ошибка',
           description: error.value?.data?.message as string ?? 'Не удалось создать бренд',
           icon: 'i-lucide-circle-x',
-          color: 'error'
+          color: 'error',
         })
       }
     }
@@ -93,6 +97,6 @@ export const useCreateBrand = () => {
     execute, // Expose execute to trigger the request manually
     status,
     data,
-    error
+    error,
   }
 }

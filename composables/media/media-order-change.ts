@@ -1,24 +1,24 @@
-import type { MediaOrderChange } from "~/types/media"
-import type { SuccessResponse, ErrorResponse } from "~/types/response"
+import type { MediaOrderChange } from '~/types/media'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
 
-export const useMediaOrderChange = () => {
+export function useMediaOrderChange() {
   const nuxtApp = useNuxtApp()
 
   const itemsToChange = useState<MediaOrderChange | null>(
     'items-to-change-media-order',
-    () => null
+    () => null,
   )
 
   const response = useAsyncData<SuccessResponse<null>, ErrorResponse>(
     'media-ordero-change',
     async () => nuxtApp.$api('/media/change-order', {
       method: 'post',
-      body: itemsToChange.value
+      body: itemsToChange.value,
     }),
     {
       immediate: false,
-      watch: [itemsToChange]
-    }
+      watch: [itemsToChange],
+    },
   )
 
   const updateMediaOrder = (items: MediaOrderChange) => {

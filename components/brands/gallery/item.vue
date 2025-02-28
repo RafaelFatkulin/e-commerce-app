@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import type { Media } from '~/types/media';
+import type { Media } from '~/types/media'
 
 defineProps<{
-  item: Media;
-  index: number;
-  isDragging: boolean;
-  isDragOver: boolean;
-}>();
+  item: Media
+  index: number
+  isDragging: boolean
+  isDragOver: boolean
+}>()
 
 defineEmits<{
-  (e: 'dragstart', index: number): void;
-  (e: 'dragover', index: number): void;
-  (e: 'drop', index: number): void;
-  (e: 'dragend'): void;
-}>();
+  (e: 'dragstart', index: number): void
+  (e: 'dragover', index: number): void
+  (e: 'drop', index: number): void
+  (e: 'dragend'): void
+}>()
 
 const runtimeConfig = useRuntimeConfig()
 
-const getPath = (path: string) => {
+function getPath(path: string) {
   return `${runtimeConfig.public.apiUrl}${path}`
 }
 </script>
@@ -27,7 +27,7 @@ const getPath = (path: string) => {
     class="w-full h-full relative group overflow-hidden aspect-square flex items-center justify-center border border-[var(--ui-border)] rounded-[calc(var(--ui-radius))] p-2 transition-all duration-200"
     :class="{
       'opacity-50': isDragging,
-      'border-dashed': isDragOver && !isDragging
+      'border-dashed': isDragOver && !isDragging,
     }"
     draggable
     @dragstart="$emit('dragstart', index)"

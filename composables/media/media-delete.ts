@@ -1,7 +1,7 @@
-import type { Media } from "~/types/media"
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
+import type { Media } from '~/types/media'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
 
-export const useMediaDelete = () => {
+export function useMediaDelete() {
   const nuxtApp = useNuxtApp()
 
   const mediaToDelete = useState<Media | null>('media-to-delete', () => null)
@@ -18,18 +18,18 @@ export const useMediaDelete = () => {
   const response = useAsyncData<SuccessResponse<null>, ErrorResponse>(
     `delete-media-${mediaToDelete.value?.id}`,
     async () => nuxtApp.$api(`/media/${mediaToDelete.value?.id}/delete`, {
-      method: 'DELETE'
+      method: 'DELETE',
     }),
     {
       immediate: false,
-      lazy: true
-    }
+      lazy: true,
+    },
   )
 
   return {
     ...response,
     mediaToDelete,
     setMediaToDelete,
-    isOpen
+    isOpen,
   }
 }

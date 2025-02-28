@@ -5,7 +5,7 @@ import type { ErrorResponse, SuccessResponse } from '~/types/response'
 const nuxtApp = useNuxtApp()
 const route = useRoute()
 
-const { data, status, error } = useAsyncData<
+const { data, status } = useAsyncData<
   SuccessResponse<RootCategory>,
   ErrorResponse
 >('category-by-slug', async () =>

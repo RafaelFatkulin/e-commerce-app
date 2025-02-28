@@ -6,12 +6,12 @@ const { isOpen, categoryToDelete, setCategoryToDelete, execute, status } = useDe
 const title = computed(
   () => categoryToDelete.value?.parentId
     ? 'Удаление подкатегории'
-    : 'Удаление категории'
+    : 'Удаление категории',
 )
 const description = computed(
   () => categoryToDelete.value?.parentId
     ? `Вы действительно хотите удалить подкатегорию "${categoryToDelete.value?.title}"?`
-    : `Вы действительно хотите удалить категорию "${categoryToDelete.value?.title}"?`
+    : `Вы действительно хотите удалить категорию "${categoryToDelete.value?.title}"?`,
 )
 
 async function onClick() {
@@ -25,9 +25,9 @@ async function closeModal() {
 <template>
   <UModal
     v-model:open="isOpen"
-    @update:open="closeModal()"
     :title
     :description
+    @update:open="closeModal()"
   >
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">

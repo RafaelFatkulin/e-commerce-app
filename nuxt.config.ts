@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   },
   image: {
     domains: ['http://localhost:8000'],
-  }
+  },
   // routeRules: {
   //   "/dashboard": {
   //     ssr: false,

@@ -118,11 +118,13 @@ function getRowItems(row: Row<RootCategory>): DropdownMenuItem[] {
 </script>
 
 <template>
-  <UCard :ui="{
-    root: !bordered ? '!border-0 ring-0 shadow-none rounded-none' : '',
-    body: 'flex flex-col gap-4',
-    header: 'flex flex-row items-center',
-  }">
+  <UCard
+    :ui="{
+      root: !bordered ? '!border-0 ring-0 shadow-none rounded-none' : '',
+      body: 'flex flex-col gap-4',
+      header: 'flex flex-row items-center',
+    }"
+  >
     <template
       v-if="bordered"
       #header

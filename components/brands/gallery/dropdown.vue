@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from '@nuxt/ui';
-import type { Media } from '~/types/media';
+import type { DropdownMenuItem } from '@nuxt/ui'
+import type { Media } from '~/types/media'
 
 const { media } = defineProps<{
   media: Media
@@ -15,7 +15,7 @@ const items = ref<DropdownMenuItem[]>([
     label: 'Изменить статус',
     icon: 'i-lucide-eye',
     color: 'primary',
-    onSelect(e) {
+    onSelect() {
       emits('setMediaToUpdateStatus', media)
     },
   },
@@ -23,7 +23,7 @@ const items = ref<DropdownMenuItem[]>([
     label: 'Удалить',
     icon: 'i-lucide-trash-2',
     color: 'error',
-    onSelect(e) {
+    onSelect() {
       emits('setMediaToDelete', media)
     },
   },

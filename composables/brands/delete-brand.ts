@@ -1,8 +1,8 @@
-import type { Brand } from "~/types/brands"
-import { useGetBrands } from "./get-brands"
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
+import type { Brand } from '~/types/brands'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
+import { useGetBrands } from './get-brands'
 
-export const useDeleteBrand = () => {
+export function useDeleteBrand() {
   const nuxtApp = useNuxtApp()
   const toast = useToast()
 
@@ -14,12 +14,12 @@ export const useDeleteBrand = () => {
   const response = useAsyncData<SuccessResponse<Brand>, ErrorResponse>(
     'delete-brand',
     async () => nuxtApp.$api(`/brands/${brandToDelete.value?.id}/delete`, {
-      method: 'DELETE'
+      method: 'DELETE',
     }),
     {
       immediate: false,
-      lazy: true
-    }
+      lazy: true,
+    },
   )
 
   const { data, status, error } = response
@@ -34,7 +34,7 @@ export const useDeleteBrand = () => {
         title: 'Успешно',
         description: data.value?.message as string,
         icon: 'i-lucide-circle-check',
-        color: 'success'
+        color: 'success',
       })
       setBrandToDelete()
       refresh()
@@ -65,6 +65,6 @@ export const useDeleteBrand = () => {
     isOpen,
     brandToDelete,
     setBrandToDelete,
-    ...response
+    ...response,
   }
 }

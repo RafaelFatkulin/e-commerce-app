@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import BransTable from '~/components/brands/brands-table.vue';
+import BransTable from '~/components/brands/brands-table.vue'
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
 })
 
 useHead(() => ({
-  title: 'Бренды'
+  title: 'Бренды',
 }))
 </script>
 

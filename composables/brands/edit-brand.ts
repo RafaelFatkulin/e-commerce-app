@@ -1,25 +1,22 @@
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
-import { useGetBrand } from "./get-brand"
-import type { Brand, EditBrand } from "~/types/brands"
+import type { Brand, EditBrand } from '~/types/brands'
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
 
-export const useEditBrand = async (bodyData: EditBrand) => {
+export async function useEditBrand(bodyData: EditBrand) {
   const nuxtApp = useNuxtApp()
 
   const route = useRoute()
   const id = route.params.id
 
-  const toast = useToast()
-
   const response = await useAsyncData<SuccessResponse<Brand>, ErrorResponse>(
     `edit-brand-${id}`,
     async () => nuxtApp.$api(`/brands/${id}/edit`, {
       method: 'PATCH',
-      body: bodyData
+      body: bodyData,
     }),
-    { immediate: false, lazy: true }
+    { immediate: false, lazy: true },
   )
 
   return {
-    ...response
+    ...response,
   }
 }

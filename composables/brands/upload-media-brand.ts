@@ -1,7 +1,7 @@
-import type { ErrorResponse, SuccessResponse } from "~/types/response"
-import { useGetBrand } from "./get-brand"
+import type { ErrorResponse, SuccessResponse } from '~/types/response'
+import { useGetBrand } from './get-brand'
 
-export const useUploadMediaBrand = () => {
+export function useUploadMediaBrand() {
   const nuxtApp = useNuxtApp()
   const route = useRoute()
   const toast = useToast()
@@ -22,13 +22,13 @@ export const useUploadMediaBrand = () => {
 
       return await nuxtApp.$api(`/brands/${Number(route.params.id)}/upload-media`, {
         method: 'POST',
-        body: formData
+        body: formData,
       })
     },
     {
       immediate: false,
-      lazy: true
-    }
+      lazy: true,
+    },
   )
 
   const { data, error, status, execute } = response
@@ -38,16 +38,17 @@ export const useUploadMediaBrand = () => {
     await execute()
   }
 
-  watch(status, (newStatus, oldStatus) => {
+  watch(status, (newStatus) => {
     if (newStatus === 'success') {
       toast.add({
         title: 'Успешно',
         description: data.value?.message ?? 'Бренд успешно создан',
         icon: 'i-lucide-circle-check',
-        color: 'success'
+        color: 'success',
       })
       refresh()
-    } else if (newStatus === 'error') {
+    }
+    else if (newStatus === 'error') {
       if (error.value?.data?.errors) {
         toast.add({
           title: error.value?.data?.message as string ?? 'Ошибка',
@@ -55,14 +56,15 @@ export const useUploadMediaBrand = () => {
             return acc.concat(`${curr.message}\n`)
           }, ''),
           icon: 'i-lucide-circle-x',
-          color: 'error'
+          color: 'error',
         })
-      } else {
+      }
+      else {
         toast.add({
           title: 'Ошибка',
           description: error.value?.data?.message as string ?? 'Не удалось создать бренд',
           icon: 'i-lucide-circle-x',
-          color: 'error'
+          color: 'error',
         })
       }
     }
@@ -70,6 +72,6 @@ export const useUploadMediaBrand = () => {
 
   return {
     ...response,
-    handleMediaUpload
+    handleMediaUpload,
   }
 }
