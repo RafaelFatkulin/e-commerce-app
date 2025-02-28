@@ -1,17 +1,16 @@
-<!-- components/MediaGallery.vue -->
 <script lang="ts" setup>
-import { BrandsGalleryItemButtons } from '#components';
-import type { DropdownMenuItem } from '@nuxt/ui';
 import { ref, computed } from 'vue';
 import { useGetBrand } from '~/composables/brands/get-brand';
+import { useMediaDelete } from '~/composables/media/media-delete';
 import { useMediaOrderChange } from '~/composables/media/media-order-change';
 import { useMediaStatus } from '~/composables/media/media-status';
 import type { Media } from '~/types/media';
 
-const route = useRoute()
 const toast = useToast();
 const { data, error, status, updateMediaOrder } = useMediaOrderChange();
 const { data: brandData, refresh } = await useGetBrand()
+const { setMediaToUpdateStatus } = useMediaStatus()
+const { setMediaToDelete } = useMediaDelete()
 
 const galleryItems = computed(() =>
   [...brandData.value?.data.media!]
@@ -76,19 +75,6 @@ watch(status, (newStatus) => {
     });
   }
 });
-
-const tempMedia = ref<Media>()
-const items = ref<DropdownMenuItem[]>([
-  {
-    label: 'Изменить статус',
-    icon: 'i-lucide-eye',
-    slot: 'status'
-  },
-  {
-    label: 'Удалить',
-    icon: 'i-lucide-trash-2',
-  },
-])
 </script>
 
 <template>
@@ -119,32 +105,25 @@ const items = ref<DropdownMenuItem[]>([
         @drop="onDrop"
         @dragend="onDragEnd"
       >
-        <BrandsGalleryItemButtons>
-
-          <BrandsGalleryStatusModal
+        <div class="flex flex-row">
+          <BrandsGalleryStatusButton
             :media="item"
-            dismissible
+            @set-media-to-update-status="setMediaToUpdateStatus"
           />
-          <BrandsGalleryDeleteModal :media="item" />
-        </BrandsGalleryItemButtons>
-
-        <UDropdownMenu :items>
-          <UButton
-            icon="i-lucide-ellipsis-vertical"
-            color="neutral"
-            variant="ghost"
-            @click="tempMedia = item"
+          <BrandsGalleryDeleteButton
+            :media="item"
+            @set-media-to-delete="setMediaToDelete"
           />
-
-          <template #status>
-            <BrandsGalleryStatusModal
-              :media="tempMedia!"
-              labelled
-            />
-          </template>
-        </UDropdownMenu>
+          <BrandsGalleryDropdown
+            :media="item"
+            @set-media-to-update-status="setMediaToUpdateStatus"
+            @set-media-to-delete="setMediaToDelete"
+          />
+        </div>
       </BrandsGalleryItem>
 
+      <BrandsGalleryStatusModal />
+      <BrandsGalleryDeleteModal />
       <BrandsGalleryAddButton />
     </div>
   </UCard>

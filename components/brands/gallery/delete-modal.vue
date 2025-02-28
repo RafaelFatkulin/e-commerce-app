@@ -1,33 +1,27 @@
 <script lang="ts" setup>
 import { useGetBrand } from '~/composables/brands/get-brand';
 import { useMediaDelete } from '~/composables/media/media-delete';
-import type { Media } from '~/types/media';
 
-const { media, labelled = false } = defineProps<{
-  media: Media
-  labelled?: boolean
-
-}>()
-
-const route = useRoute()
 const toast = useToast()
 
 const {
   isOpen,
+  mediaToDelete,
   setMediaToDelete,
   data,
   error,
   status,
   execute,
 } = useMediaDelete()
-const { refresh } = useGetBrand(Number(route.params.id))
+const { refresh } = useGetBrand()
 
 const description = ref<string>('')
 
-async function openModal() {
-  setMediaToDelete(media)
-  description.value = `Вы действительно хотите удалить "${media.alt}"?`
-}
+watch(mediaToDelete, (newMedia) => {
+  if (newMedia) {
+    description.value = `Вы действительно хотите удалить "${newMedia.alt}"?`
+  }
+})
 
 async function closeModal() {
   setMediaToDelete()
@@ -81,15 +75,6 @@ watch(status, () => {
     title="Удаление медиа-файла"
     :description
   >
-    <UTooltip text="Удалить изображение">
-      <UButton
-        @click="openModal"
-        icon="i-lucide-x"
-        variant="ghost"
-        color="error"
-        :label="labelled ? 'Удалить изображение' : ''"
-      />
-    </UTooltip>
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">
 

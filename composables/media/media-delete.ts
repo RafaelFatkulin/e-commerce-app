@@ -7,6 +7,14 @@ export const useMediaDelete = () => {
   const mediaToDelete = useState<Media | null>('media-to-delete', () => null)
   const isOpen = ref(false)
 
+  function setMediaToDelete(media?: Media) {
+    mediaToDelete.value = media || null
+  }
+
+  watch(mediaToDelete, (newValue) => {
+    isOpen.value = !!newValue
+  })
+
   const response = useAsyncData<SuccessResponse<null>, ErrorResponse>(
     `delete-media-${mediaToDelete.value?.id}`,
     async () => nuxtApp.$api(`/media/${mediaToDelete.value?.id}/delete`, {
@@ -18,13 +26,9 @@ export const useMediaDelete = () => {
     }
   )
 
-  function setMediaToDelete(media?: Media) {
-    mediaToDelete.value = media || null
-    isOpen.value = !!media
-  }
-
   return {
     ...response,
+    mediaToDelete,
     setMediaToDelete,
     isOpen
   }

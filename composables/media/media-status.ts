@@ -9,14 +9,12 @@ export const useMediaStatus = () => {
   const isOpen = ref(false)
 
   function setMediaToUpdateStatus(media?: Media) {
-    console.log(media);
-
     mediaToUpdateStatus.value = media || null
-    console.log(mediaToUpdateStatus.value?.alt);
-    isOpen.value = !!media
   }
 
-  watch(isOpen, () => console.log(isOpen.value))
+  watch(mediaToUpdateStatus, (newValue) => {
+    isOpen.value = !!newValue
+  })
 
   const response = useAsyncData<SuccessResponse<null>, ErrorResponse>(
     `update-status-media-${mediaToUpdateStatus.value?.id}`,
@@ -35,6 +33,7 @@ export const useMediaStatus = () => {
   return {
     ...response,
     setMediaToUpdateStatus,
+    mediaToUpdateStatus,
     isOpen
   }
 }

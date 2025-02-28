@@ -1,18 +1,12 @@
 <script lang="ts" setup>
 import { useGetBrand } from '~/composables/brands/get-brand';
 import { useMediaStatus } from '~/composables/media/media-status';
-import type { Media } from '~/types/media';
-
-const { media, labelled = false, dismissible = true } = defineProps<{
-  media: Media
-  labelled?: boolean
-  dismissible?: boolean
-}>()
 
 const toast = useToast()
 
 const {
   isOpen,
+  mediaToUpdateStatus,
   setMediaToUpdateStatus,
   data,
   error,
@@ -24,12 +18,13 @@ const { refresh } = useGetBrand()
 
 const description = ref<string>('')
 
-function openModal() {
-  setMediaToUpdateStatus(media)
 
-  const newStatus = media.status === 'active' ? 'нективный' : 'активный'
-  description.value = `Вы действительно хотите изменить статус у "${media.alt}" на ${newStatus}?`
-}
+watch(mediaToUpdateStatus, (newMedia) => {
+  if (newMedia) {
+    const newStatus = newMedia.status === 'active' ? 'нективный' : 'активный'
+    description.value = `Вы действительно хотите изменить статус у "${newMedia.alt}" на ${newStatus}?`
+  }
+})
 
 function closeModal() {
   setMediaToUpdateStatus()
@@ -77,26 +72,12 @@ watch(status, async () => {
 </script>
 
 <template>
-
   <UModal
     v-model:open="isOpen"
-    @update:open="closeModal"
+    @update:open="(val) => isOpen = val"
     title="Изменение статуса медиа-файла"
     :description
-    :dismissible
   >
-    <UTooltip
-      text="Изменить статус"
-      :disabled="labelled"
-    >
-      <UButton
-        @click="openModal"
-        icon="i-lucide-eye"
-        variant="ghost"
-        color="primary"
-        :label="labelled ? 'Изменить статус' : ''"
-      />
-    </UTooltip>
     <template #body>
       <div class="flex flex-row items-center justify-end gap-4">
 
