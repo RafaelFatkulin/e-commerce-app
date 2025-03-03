@@ -1,19 +1,10 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
-import { useCurrentUser } from '~/composables/auth/current-user'
 import { useSignout } from '~/composables/auth/signout'
 import { useAuthStore } from '~/stores/auth'
 
 const { execute } = await useSignout()
-const { user, setUser } = useAuthStore()
-
-const { data } = await useCurrentUser()
-
-watch(data, () => {
-  if (data.value?.data) {
-    setUser(data.value?.data)
-  }
-})
+const { user } = useAuth()
 
 const items = ref<DropdownMenuItem[] | DropdownMenuItem[][]>([
   [
@@ -50,9 +41,15 @@ const items = ref<DropdownMenuItem[] | DropdownMenuItem[][]>([
         align: 'end',
       }"
     >
-      <UButton variant="ghost" color="neutral">
+      <UButton
+        variant="ghost"
+        color="neutral"
+      >
         <template #leading>
-          <UIcon class="size-5 md:size-6" name="i-lucide-circle-user" />
+          <UIcon
+            class="size-5 md:size-6"
+            name="i-lucide-circle-user"
+          />
         </template>
         <span>{{ user?.fullName }}</span>
       </UButton>

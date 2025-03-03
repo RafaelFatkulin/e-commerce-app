@@ -2,7 +2,7 @@ import type { CurrentUser } from '~/types/auth'
 import type { SuccessResponse } from '~/types/response'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const { accessToken, refreshToken, updateCookies } = useAuth()
+  const { accessToken, refreshToken, updateCookies, updateUser } = useAuth()
 
   const {
     public: { apiUrl },
@@ -35,6 +35,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             refreshToken: refreshToken.value,
           },
           onResponse({ response }) {
+            updateUser(response._data.data?.user || null)
             updateCookies({
               at: response._data.data?.accessToken || '',
               rt: response._data.data?.refreshToken || '',

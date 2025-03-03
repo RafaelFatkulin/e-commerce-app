@@ -42,7 +42,7 @@ export function useGetCategories() {
       watch: [filterWithoutQ, debouncedQ],
       immediate: true,
       default: () => ({ data: [], error: null }),
-      dedupe: 'cancel',
+      dedupe: 'defer',
     },
   )
 

@@ -1,7 +1,7 @@
-import { useAuthStore } from '~/stores/auth'
+import type { CurrentUser } from '~/types/auth'
 
 export function useAuth() {
-  const { user } = useAuthStore()
+  const { user, setUser } = useAuthStore()
 
   const accessToken = useCookie('access_token', {
     maxAge: 60 * 15,
@@ -10,7 +10,11 @@ export function useAuth() {
     maxAge: 60 * 60 * 24 * 7,
   })
 
-  const isLoggedIn = computed(() => !!refreshToken.value && user)
+  const isLoggedIn = computed(() => !!refreshToken.value && !!user)
+
+  const updateUser = (userToSet: CurrentUser | null) => {
+    setUser(userToSet)
+  }
 
   const updateCookies = ({ at, rt, atExpiresAt, rtExpiresAt }: { at: string, rt: string, atExpiresAt: Date | undefined, rtExpiresAt: Date | undefined }) => {
     useCookie('access_token', {
@@ -26,8 +30,9 @@ export function useAuth() {
   return {
     accessToken,
     refreshToken,
-    user,
     isLoggedIn,
     updateCookies,
+    updateUser,
+    user
   }
 }

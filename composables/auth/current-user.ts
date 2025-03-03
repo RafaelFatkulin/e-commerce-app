@@ -4,22 +4,23 @@ import type { ErrorResponse, SuccessResponse } from '~/types/response'
 export async function useCurrentUser() {
   const nuxtApp = useNuxtApp()
 
-  const { setUser } = useAuthStore()
+  const { updateUser } = useAuth()
 
   const response = await useAsyncData<SuccessResponse<CurrentUser>, ErrorResponse>(
     'signin',
     async () => nuxtApp.$api('/profile'),
     {
-      immediate: true,
+      immediate: false,
       dedupe: 'defer',
     },
-  ).then((res) => {
-    const user = res.data.value?.data
-    if (user) {
-      setUser(user)
-    }
+  )
 
-    return res
+  const { data, status } = response
+
+  watch(status, () => {
+    if (status.value === 'success') {
+      updateUser(data.value?.data || null)
+    }
   })
 
   return { ...response }

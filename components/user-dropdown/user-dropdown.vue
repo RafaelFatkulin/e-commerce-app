@@ -36,7 +36,10 @@ const items = ref<DropdownMenuItem[][]>([
 </script>
 
 <template>
-  <u-dropdown-menu :ui="{ content: 'min-w-50' }" :items="items">
+  <u-dropdown-menu
+    :ui="{ content: 'min-w-50' }"
+    :items="items"
+  >
     <u-button
       :label="user?.fullName"
       class="justify-between"
@@ -49,7 +52,8 @@ const items = ref<DropdownMenuItem[][]>([
       <div class="flex flex-row w-full justify-between gap-2 items-center">
         <div class="flex flex-col">
           <span class="font-medium">{{ user?.fullName }}</span>
-          <span class="font-normal text-[var(--ui-neutral-500)] text-xs">{{ user?.email }}</span>
+          <span class="font-normal text-[var(--ui-neutral-500)] text-xs">{{
+            user?.email }}</span>
         </div>
         <ThemeButton />
       </div>

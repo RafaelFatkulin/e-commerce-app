@@ -16,9 +16,7 @@ const toast = useToast()
 const router = useRouter()
 const form = useTemplateRef('form')
 
-const { updateCookies } = useAuth()
-
-const { setUser } = useAuthStore()
+const { updateCookies, updateUser } = useAuth()
 
 const { data, status, error, clear, execute } = useSignin(state)
 
@@ -32,9 +30,7 @@ watch(status, (value) => {
     })
 
     if (data.value?.data.user) {
-      setUser(
-        data.value?.data.user,
-      )
+      updateUser(data.value?.data.user)
     }
 
     toast.add({
