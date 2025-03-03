@@ -1,4 +1,4 @@
-import type { Product, ProductFilter } from "~/types/products"
+import type { ProductFilter, ProductWithInfo } from "~/types/products"
 import type { ErrorResponse, SuccessResponse } from "~/types/response"
 
 export function useGetProducts() {
@@ -20,15 +20,15 @@ export function useGetProducts() {
     per_page: filter.value.per_page,
     sort_by: filter.value.sort_by,
     sort_order: filter.value.sort_order,
-    brandId: filter.value.brandId,
-    categoryId: filter.value.categoryId
+    brand_id: filter.value.brand_id,
+    category_id: filter.value.category_id
   }))
 
   const queryParams = refDebounced(queryParamsRaw, 500)
 
   const path = apiEndpoints().products.getAll()
 
-  const response = useAsyncData<SuccessResponse<Product[]>, ErrorResponse>(
+  const response = useAsyncData<SuccessResponse<ProductWithInfo[]>, ErrorResponse>(
     'get-products',
     async () => await nuxtApp.$api(path, {
       params: queryParams.value

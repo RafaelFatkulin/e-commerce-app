@@ -14,7 +14,7 @@ export async function useEditCategory(bodyData: EditCategory) {
 
   const response = await useAsyncData<SuccessResponse<RootCategory>, ErrorResponse>(
     `edit-category-${id}`,
-    async () => nuxtApp.$api(`/categories/${id}`, {
+    async () => nuxtApp.$api(`/categories/${id}/edit`, {
       method: 'PATCH',
       body: bodyData,
     }),

@@ -14,6 +14,11 @@ export const productSchema = z.object({
   createdAt: z.string(),
 })
 
+export const productWithInfoSchema = productSchema.extend({
+  brand: z.string(),
+  category: z.string()
+})
+
 export const createProductSchema = z.object({
   title: stringField(3, 128),
   description: stringField(20, 3000),
@@ -32,6 +37,6 @@ export const editProductSchema = z.object({
 })
 
 export const productFilterSchema = createFilterSchema(productSchema).extend({
-  brandId: z.number().optional(),
-  categoryId: z.number().optional(),
+  brand_id: z.number().optional(),
+  category_id: z.number().optional(),
 })

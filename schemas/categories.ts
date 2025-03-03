@@ -15,6 +15,11 @@ export const rootCategorySchema = z.object({
   status: categoryStatusSchema,
 })
 
+export const minimalCategorySchema = rootCategorySchema.pick({
+  id: true,
+  title: true
+})
+
 export const categorySchema = rootCategorySchema.extend({
   categories: z.array(rootCategorySchema),
 })

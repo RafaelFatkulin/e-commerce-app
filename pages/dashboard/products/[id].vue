@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'dashboard',
+  layout: 'dashboard'
 })
 </script>
 
@@ -8,10 +8,9 @@ definePageMeta({
   <DashboardPage>
     <template #header>
       <DashboardTitle>
-        Товары
+        Товар #{{ $route.params.id }}
       </DashboardTitle>
     </template>
 
-    <ProductsTable />
   </DashboardPage>
 </template>

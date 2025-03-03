@@ -45,28 +45,23 @@ watch(status, (value) => {
   }
   if (value === 'error') {
     if (error.value?.data?.errors) {
-      let msg = ''
-      Object.keys(error.value.data.errors).forEach((key) => {
-        error?.value?.data?.errors[key]?._errors?.forEach((err) => {
-          msg = `${msg} ${err}`
-        })
-      })
-
       toast.add({
-        title: 'Error',
-        description: msg.trim(),
+        title: error.value?.data?.message as string,
+        description: error.value?.data?.errors.reduce((acc, curr) => {
+          return acc.concat(`${curr.message}\n`)
+        }, ''),
+        icon: 'i-lucide-circle-x',
         color: 'error',
-        icon: 'i-lucide-shield-alert',
       })
-
-      return
     }
-    toast.add({
-      title: 'Error',
-      description: error.value?.data?.message as string,
-      color: 'error',
-      icon: 'i-lucide-shield-alert',
-    })
+    else {
+      toast.add({
+        title: 'Ошибка',
+        description: error.value?.data?.message as string,
+        icon: 'i-lucide-circle-x',
+        color: 'error',
+      })
+    }
     clear()
   }
 })

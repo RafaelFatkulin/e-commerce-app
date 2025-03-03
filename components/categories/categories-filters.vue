@@ -4,7 +4,7 @@ import { useGetCategories } from '~/composables/categories/get-categories'
 const {
   status,
   filter,
-} = await useGetCategories()
+} = useGetCategories()
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const {
         <UButton
           aria-label="Очистить поле"
           color="neutral"
-          icon="i-heroicons-x-circle"
+          icon="i-lucide-circle-x"
           size="md"
           variant="link"
           @click="filter.q = ''"

@@ -11,6 +11,10 @@ export const brandSchema = z.object({
   order: z.number(),
   status: statusSchema,
 })
+export const minimalBrandSchema = brandSchema.pick({
+  id: true,
+  title: true
+})
 export const brandWithMediaSchema = brandSchema.extend({
   media: z.array(mediaSchema),
 })

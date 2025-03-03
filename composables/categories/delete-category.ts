@@ -13,7 +13,7 @@ export function useDeleteCategory() {
 
   const response = useAsyncData<SuccessResponse<RootCategory>, ErrorResponse>(
     'delete-category',
-    async () => nuxtApp.$api(`/categories/${categoryToDelete.value?.id}`, {
+    async () => nuxtApp.$api(`/categories/${categoryToDelete.value?.id}/delete`, {
       method: 'DELETE',
     }),
     {
