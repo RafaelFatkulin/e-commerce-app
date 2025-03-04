@@ -7,12 +7,12 @@ import type { MinimalCategory } from '~/types/categories';
 
 const { status, filter } = useGetProducts()
 const { data: brandsData, status: brandsStatus } = useGetMinimalBrands()
-const { data: categoriesData, status: categoriesStatus } = useGetMinimalCategories()
+const { data: categoriesData, status: categoriesStatus } = useGetMinimalCategories(true)
 
 const loading = computed(() => status.value === 'pending')
 
-const brandItems = ref<MinimalBrand[] | undefined>(brandsData.value?.data)
-const categoriesItems = ref<MinimalCategory[] | undefined>(categoriesData.value?.data)
+const brandItems = computed<MinimalBrand[] | undefined>(() => brandsData.value?.data)
+const categoriesItems = computed<MinimalCategory[] | undefined>(() => categoriesData.value?.data)
 </script>
 
 <template>

@@ -10,7 +10,6 @@ export const useGetMinimalBrands = () => {
     {
       immediate: true,
       dedupe: 'cancel',
-      getCachedData: null
     }
   )
 }

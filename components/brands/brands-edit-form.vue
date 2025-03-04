@@ -79,7 +79,7 @@ watch(status, async () => {
         Редактирование бренда
       </h2>
       <p class="text-sm text-pretty text-(--ui-text-muted)">
-        Измените основные параметры бренадхах
+        Измените основные параметры бренда
       </p>
     </template>
 

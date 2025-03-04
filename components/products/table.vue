@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { useGetProducts } from '~/composables/products/get-products';
 
-const { data, status, error } = useGetProducts()
-
-
+const { data, status, error, filter } = useGetProducts()
 </script>
 
 
@@ -29,6 +27,14 @@ const { data, status, error } = useGetProducts()
           <span v-else>Нет данных</span>
         </template>
       </UTable>
+      <UPagination
+        v-model:page="filter.page"
+        :items-per-page="filter.per_page"
+        :total="data?.meta?.total"
+        @update:page="(p) => (filter.page = p)"
+      />
+
+      <ProductsDeleteModal />
     </UCard>
   </ProductsColumns>
 </template>

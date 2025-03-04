@@ -94,7 +94,7 @@ export function useCreateBrand() {
     isOpen,
     state,
     resetForm,
-    execute, // Expose execute to trigger the request manually
+    execute,
     status,
     data,
     error,

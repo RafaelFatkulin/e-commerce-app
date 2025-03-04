@@ -3,12 +3,14 @@ import type { ButtonProps, TableColumn } from '@nuxt/ui';
 import type { ProductWithInfo } from '~/types/products';
 import type { Row } from '@tanstack/vue-table'
 import { useGetProducts } from '~/composables/products/get-products';
+import { useDeleteProduct } from '~/composables/products/delete-product';
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const { filter } = useGetProducts()
+const { setProductToDelete } = useDeleteProduct()
 
 const columns: TableColumn<ProductWithInfo>[] = [
   {
@@ -58,9 +60,9 @@ const columns: TableColumn<ProductWithInfo>[] = [
         {
           size: 'md',
           variant: 'soft',
-          color: 'info',
+          color: value ? 'info' : 'error',
         },
-        () => value,
+        () => value ? value : 'Удаленный бренд',
       )
     },
   },
@@ -74,9 +76,9 @@ const columns: TableColumn<ProductWithInfo>[] = [
         {
           size: 'md',
           variant: 'soft',
-          color: 'info',
+          color: value ? 'info' : 'error',
         },
-        () => value,
+        () => value ? value : 'Удаленная категория',
       )
     },
   },
@@ -127,7 +129,7 @@ function getRowItems(row: Row<ProductWithInfo>) {
       icon: 'i-lucide-trash-2',
       label: 'Удалить',
       color: 'error' as const,
-      onSelect: () => { }
+      onSelect: () => setProductToDelete(row.original)
     },
   ]
 }

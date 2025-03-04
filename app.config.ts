@@ -9,6 +9,11 @@ export default defineAppConfig({
         base: 'cursor-pointer',
       },
     },
+    selectMenu: {
+      slots: {
+        base: 'cursor-pointer'
+      }
+    },
     navigationMenu: {
       slots: {
         linkLabel: 'text-md',
